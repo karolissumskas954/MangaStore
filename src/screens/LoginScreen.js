@@ -3,6 +3,9 @@ import React, {useEffect, useState} from 'react'
 import { auth } from '../../firebase'
 import { useNavigation } from '@react-navigation/core'
 
+import { LogBox } from 'react-native';
+LogBox.ignoreLogs(["AsyncStorage has been extracted from react-native core and will be removed in a future release. It can now be installed and imported from '@react-native-async-storage/async-storage' instead of 'react-native'. See https://github.com/react-native-async-storage/async-storage"]); // Ignore log notification by message
+
 const LoginScreen = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -43,6 +46,7 @@ const LoginScreen = () => {
     }
 
     return (
+    
         <KeyboardAvoidingView
             style={styles.container}
             behavior="padding"
