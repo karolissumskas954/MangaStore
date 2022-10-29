@@ -40,11 +40,6 @@ const HomeScreen = () => {
     fetchBlogs();
   }, [])
 
-
-
-
-
-
   const email = auth.currentUser?.email;
   const navigation = useNavigation()
 
