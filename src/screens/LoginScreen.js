@@ -135,14 +135,15 @@ const styles = StyleSheet.create({
         fontSize: 16,
     },
     titleText: {
-        color: '#EF3014',
+        color: '#E0DACC',
         fontSize: '20px',
+        fontFamily: 'KohinoorBangla-Semibold'
     },
     titleText2: {
-        color: '#EF3014',
-        fontStyle: 'italic',
-        fontSize: '40px',
-        fontFamily: 'Arial'
+        color: '#E0DACC',
+        fontSize: '45px',
+        fontFamily: 'KohinoorBangla-Semibold',
+        marginTop: -10
 
     },
     titleContainer: {
