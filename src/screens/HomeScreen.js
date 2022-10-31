@@ -109,12 +109,15 @@ const HomeScreen = () => {
 
   function renderHeader(profile) {
     return (
-      <View style={styles.container}>
+      <View style={{ flex: 1,
+        flexDirection: 'row',
+        paddingHorizontal: 24,
+        alignItems: 'center'}}>
         {/* Greetings */}
         <View style={{ flex: 1 }}>
           <View>
-            <Text style={styles.greetingText}>Good Morning</Text>
-            <Text style={styles.greetingText2}>{profile}</Text>
+            <Text style={{fontSize: 16,lineHeight: 22,color: '#E0DACC',fontFamily: 'KohinoorBangla-Regular'}}>Good Morning</Text>
+            <Text style={{fontSize: 22,lineHeight: 25,color: '#E0DACC',fontFamily: 'KohinoorBangla-Semibold'}}>{profile}</Text>
           </View>
         </View>
         {/* Log out */}
@@ -138,7 +141,7 @@ const HomeScreen = () => {
                 style={{ width: 20, height: 20, marginLeft: 5 }}
               />
             </View>
-            <Text style={{ color: '#FFFFFF', fontFamily: 'KohinoorBangla-Regular', marginLeft: 8 }}>Log Out</Text>
+            <Text style={{ color: '#E0DACC', fontFamily: 'KohinoorBangla-Regular', marginLeft: 8 }}>Log Out</Text>
           </View>
         </TouchableOpacity>
       </View>
@@ -169,7 +172,7 @@ const HomeScreen = () => {
                 resizeMode="contain"
                 style={{ width: 30, height: 30 }}
               />
-              <Text style={{ merginLeft: 8, fontFamily: 'KohinoorBangla-Light', color: "#FFFFFF" }}>Add book</Text>
+              <Text style={{ merginLeft: 8, fontFamily: 'KohinoorBangla-Light', color: '#E0DACC' }}>Add book</Text>
             </View>
           </TouchableOpacity>
           {/* Line Divider */}
@@ -177,14 +180,14 @@ const HomeScreen = () => {
           {/* Get points */}
           <TouchableOpacity
             style={{ flex: 1 }}
-            onPress={() => console.log("Get points")}>
+            onPress={() => navigation.replace("More")}>
             <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
               <Image
                 source={point_icon}
                 resizeMode="contain"
                 style={{ width: 30, height: 30 }}
               />
-              <Text style={{ merginLeft: 8, fontFamily: 'KohinoorBangla-Light', color: "#FFFFFF" }}>Get points</Text>
+              <Text style={{ merginLeft: 8, fontFamily: 'KohinoorBangla-Light', color: '#E0DACC' }}>All Books</Text>
             </View>
           </TouchableOpacity>
           {/* Line Divider */}
@@ -199,7 +202,7 @@ const HomeScreen = () => {
                 resizeMode="contain"
                 style={{ width: 30, height: 30 }}
               />
-              <Text style={{ merginLeft: 8, fontFamily: 'KohinoorBangla-Light', color: "#FFFFFF" }}>My card</Text>
+              <Text style={{ merginLeft: 8, fontFamily: 'KohinoorBangla-Light', color: '#E0DACC' }}>My card</Text>
             </View>
           </TouchableOpacity>
         </View>
@@ -293,7 +296,7 @@ const HomeScreen = () => {
               <View style={{ marginVertical: 8 }}>
                 <TouchableOpacity
                   style={{ flex: 1, flexDirection: 'row' }}
-                  onPress={() => console.log("Enter book page")}
+                  onPress={() => navigation.navigate("Book", item)}
                 >
                   {/* Book cover  */}
                   <Image
@@ -328,6 +331,11 @@ const HomeScreen = () => {
                       <View style={{ justifyContent: 'center', alignItems: 'center', padding: 8, marginRight: 8, backgroundColor: "#31262F", height: 40, borderRadius: 12 }}>
                         <Text style={{ fontFamily: 'KohinoorBangla-Regular', color: "#C5505E" }}>
                           {item.language}
+                        </Text>
+                      </View>
+                      <View style={{ justifyContent: 'center', alignItems: 'center', padding: 8, marginRight: 8, backgroundColor: "#22273B", height: 40, borderRadius: 12 }}>
+                        <Text style={{ fontFamily: 'KohinoorBangla-Regular', color: "#424BAF" }}>
+                          {item.publisher}
                         </Text>
                       </View>
                     </View>
@@ -392,6 +400,15 @@ const HomeScreen = () => {
           <View>
             {renderCategoryData()}
           </View>
+          <View style={{padding: 8, marginLeft: 12}}>
+            <TouchableOpacity
+            onPress={() => navigation.replace("More")}
+            >
+            <Text style={{color:'#E0DACC', textDecorationLine: 'underline', fontSize: 16, fontFamily: 'KohinoorBangla-Semibold' }}> More Books</Text>
+            </TouchableOpacity>
+          
+
+          </View>
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -401,40 +418,4 @@ const HomeScreen = () => {
 export default HomeScreen
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    flexDirection: 'row',
-    paddingHorizontal: 24,
-    alignItems: 'center'
-  },
-  button: {
-    backgroundColor: '#0782F9',
-    width: '60%',
-    padding: 15,
-    borderRadius: 10,
-    alignItems: 'center',
-    marginTop: 40
-  },
-  buttonText: {
-    color: 'white',
-    fontWeight: '700',
-    fontSize: 16,
-  },
-  image: {
-    marginTop: 10,
-    width: 200,
-    height: 300,
-  },
-  greetingText: {
-    fontSize: 16,
-    lineHeight: 22,
-    color: '#E0DACC',
-    fontFamily: 'KohinoorBangla-Regular'
-  },
-  greetingText2: {
-    fontSize: 22,
-    lineHeight: 25,
-    color: '#E0DACC',
-    fontFamily: 'KohinoorBangla-Semibold'
-  }
 })
