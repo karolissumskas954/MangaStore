@@ -17,12 +17,29 @@ import { db } from '../../firebase';
 
 import { LogBox } from 'react-native';
 LogBox.ignoreLogs(["AsyncStorage has been extracted from react-native core and will be removed in a future release. It can now be installed and imported from '@react-native-async-storage/async-storage' instead of 'react-native'. See https://github.com/react-native-async-storage/async-storage"]); // Ignore log notification by message
+LogBox.ignoreLogs(["VirtualizedLists should never be nested inside plain ScrollViews with the same orientation because it can break windowing and other functionality - use another VirtualizedList-backed container instead."]); // Ignore log notification by message
 import claim_icon from './assets/img/claim_icon.png'
 import logOutImg from './assets/img/logout.png'
 import point_icon from './assets/img/point_icon.png'
 import card_icon from './assets/img/card_icon.png'
+import page_icon from './assets/img/page.png'
 
 const HomeScreen = () => {
+  const categoriesData = [
+    {
+      id: 0,
+      categoryName: "Best Seller",
+    },
+    {
+      id: 1,
+      categoryName: "The Latest"
+    },
+    {
+      id: 2,
+      categoryName: "Coming Soon"
+    },
+  ];
+
   const [blogs, setBlogs] = useState([])
 
   const fetchBlogs = async () => {
@@ -31,11 +48,18 @@ const HomeScreen = () => {
       .then((querySnapshot) => {
         const items = []
         querySnapshot.forEach((doc) => {
-          const { title, uri } = doc.data()
+          const { title, uri, author, description, language, pages, postEmail, price, publisher } = doc.data()
           items.push({
             id: doc.id,
             title,
-            uri
+            uri,
+            author,
+            description,
+            language,
+            pages,
+            price,
+            postEmail,
+            publisher
           })
         })
         setBlogs(items)
@@ -48,18 +72,22 @@ const HomeScreen = () => {
   const email = auth.currentUser?.email;
   const navigation = useNavigation()
 
+
+  const [categories, setCategory] = React.useState(categoriesData);
+  const [selectedCategory, setSelectedCategory] = React.useState(0);
+
   const writeData = () => {
     db.collection("manga").add({
-      title: "Death note black edition, Vol. 4",
-      price: "€19,99",
-      author: "Tsugumi Ohba",
-      publisher: "VIZ",
+      title: "Fire Force, Vol. 12",
+      price: "€13,99",
+      author: "Ohkubo, Atsushi",
+      publisher: "Kodansha Comics",
       language: "English",
-      pages: 416,
-      isbn: 9781421539676,
-      description: "Light Yagami is an excellent student with great prospects, but he is bored. Everything changes when he finds the Death Note, a notebook dropped by the cruel Shinigami God of Death. Everyone whose name is written in the notebook dies, and now Light has vowed to use the power of the death note to rid the world of evil. But when the number of murders rises sharply, the authorities send the legendary detective L. to find the killer. With hot-headed detective L., will Light forget his noble purpose...and his life?",
+      pages: 192,
+      isbn: 9781632366634,
+      description: "Fire Force - The city of Tokyo is plagued by a deadly phenomenon: spontaneous human combustion! Fortunately, there is a special team to extinguish the inferno: Firemen! The 8 firefighters of the Special Fire Department are about to receive a unique addition. A boy named Shinra who has the power to run at rocket speed, leaving the famous 'devil footprints' (and destroying his shoes in the process). Can Shinra and his colleagues discover the source of this strange epidemic before the city burns down?",
       postEmail: email,
-      uri: 'https://www.fujidream.lt/wp-content/uploads/2021/08/81O8gD-RkcL-600x877.jpg'
+      uri: 'https://www.fujidream.lt/wp-content/uploads/2022/03/51Exv3HTPNL.jpg'
 
     })
       .then((docRef) => {
@@ -68,7 +96,6 @@ const HomeScreen = () => {
       .catch((error) => {
         console.error("Error adding document: ", error);
       });
-
   }
 
   const handleSignOut = () => {
@@ -110,7 +137,6 @@ const HomeScreen = () => {
                 resizeMode="contain"
                 style={{ width: 20, height: 20, marginLeft: 5 }}
               />
-
             </View>
             <Text style={{ color: '#FFFFFF', fontFamily: 'KohinoorBangla-Regular', marginLeft: 8 }}>Log Out</Text>
           </View>
@@ -126,7 +152,6 @@ const HomeScreen = () => {
       </View>
     )
   }
-
 
   function renderButtonSection() {
     return (
@@ -183,43 +208,137 @@ const HomeScreen = () => {
   }
 
   function renderMyBookSection() {
-    return(
-      <View style={{flex:1}}>
+    return (
+      <View style={{ flex: 1 }}>
         {/* Header */}
-        <View style={{paddingHorizontal: 24, flexDirection: 'row', justifyContent: 'space-between'}}>
-          <Text style={{fontSize: 22, fontFamily: 'KohinoorBangla-Semibold', color: "#E0DACC"}}>My Books</Text>
+        <View style={{ paddingHorizontal: 24, flexDirection: 'row', justifyContent: 'space-between' }}>
+          <Text style={{ fontSize: 22, fontFamily: 'KohinoorBangla-Semibold', color: "#E0DACC" }}>My Books</Text>
         </View>
         {/* Books */}
-        <View style={{flex: 1, marginTop: 24}}>
-          <FlatList 
+        <View style={{ flex: 1, marginTop: 24 }}>
+          <FlatList
             data={blogs}
             horizontal
             showsHorizontalScrollIndicator={false}
-            renderItem={({item, index}) => (
-
-              <TouchableOpacity
-              style={{flex:1, marginLeft: index == 0 ? 24 : 0, marginRight: 12}}
-              onPress={() => console.log("Edit book screen")}
-              >
-                <Image
-                source={{ uri: item.uri }}
-                resizeMode="cover"
-                style={{width: 180, height: 250, borderRadius: 20}}
-                
-                />
-
-              </TouchableOpacity>
-            )}
+            renderItem={({ item, index }) => {
+              if (email == item.postEmail) {
+                return (
+                  <TouchableOpacity
+                    style={{ flex: 1, marginLeft: index == 0 ? 24 : 0, marginRight: 22 }}
+                    onPress={() => console.log("Edit book screen")}
+                  >
+                    <Image
+                      source={{ uri: item.uri }}
+                      resizeMode="cover"
+                      style={{ width: 180, height: 250, borderRadius: 20 }} />
+                  </TouchableOpacity>
+                )
+              }
+            }}
           />
-
-
         </View>
-
       </View>
     )
   }
 
+  function renderCategoryHeader() {
+    return (
+      <View style={{ flex: 1, paddingLeft: 24 }}>
+        <ScrollView horizontal={true} style={{ width: "100%" }}>
+          <FlatList
+            data={categoriesData}
+            showsHorizontalScrollIndicator={false}
+            horizontal
+            renderItem={({ item, index }) => (
+              <TouchableOpacity
+                style={{ flex: 1, marginRight: 24 }}
+                onPress={() => setSelectedCategory(item.id)}
+              >
+                {
+                  selectedCategory == item.id &&
+                  <Text style={{ color: '#E0DACC', fontFamily: 'KohinoorBangla-Regular' }}>{item.categoryName}</Text>
+                }
+                {
+                  selectedCategory != item.id &&
+                  <Text style={{ color: '#64676D', fontFamily: 'KohinoorBangla-Regular' }}>{item.categoryName}</Text>
+                }
+              </TouchableOpacity>
+            )}
+          />
+        </ScrollView>
+      </View>
+    )
+  }
 
+  function renderCategoryData() {
+    var start = 0
+    var end = 4
+    if (selectedCategory == 0) {
+      start = 0
+      end = 4
+    } else if (selectedCategory == 1) {
+      start = 4
+      end = 5
+
+    } else if (selectedCategory == 2) {
+      start = 5
+      end = 6
+    }
+    return (
+      <View style={{ flex: 1, marginTop: 12, paddingLeft: 24 }}>
+        <FlatList
+          data={blogs.slice(start, end)}
+          showsVerticalScrollIndicator={false}
+          renderItem={({ item }) => (
+              <View style={{ marginVertical: 8 }}>
+                <TouchableOpacity
+                  style={{ flex: 1, flexDirection: 'row' }}
+                  onPress={() => console.log("Enter book page")}
+                >
+                  {/* Book cover  */}
+                  <Image
+                    source={{ uri: item.uri }}
+                    resizeMode='cover'
+                    style={{ width: 100, height: 150, borderRadius: 10 }}
+                  />
+                  <View style={{ flex: 1, marginLeft: 12 }}>
+                    {/* Book name and author  */}
+                    <View>
+                      <Text style={{ paddingRight: 24, color: '#E0DACC', fontFamily: 'KohinoorBangla-Semibold' }}>{item.title}</Text>
+                      <Text style={{ fontFamily: 'KohinoorBangla-Regular', color: '#64676D' }}>{item.author}</Text>
+                    </View>
+                    {/* Book Info  */}
+                    <View style={{ flexDirection: 'row', marginTop: 12 }}>
+                      <Image
+                        source={page_icon}
+                        resizeMode="contain"
+                        style={{ width: 20, height: 20, tintColor: "#64676D" }}
+                      />
+                      <Text style={{ color: '#64676D', fontFamily: 'KohinoorBangla-Regular', paddingHorizontal: 12 }}>
+                        {item.pages}
+                      </Text>
+                    </View>
+                    {/* Data  */}
+                    <View style={{ flexDirection: 'row', marginTop: 8 }}>
+                      <View style={{ justifyContent: 'center', alignItems: 'center', padding: 8, marginRight: 8, backgroundColor: "#213432", height: 40, borderRadius: 12 }}>
+                        <Text style={{ fontFamily: 'KohinoorBangla-Regular', color: "#31Ad66" }}>
+                          {item.price}
+                        </Text>
+                      </View>
+                      <View style={{ justifyContent: 'center', alignItems: 'center', padding: 8, marginRight: 8, backgroundColor: "#31262F", height: 40, borderRadius: 12 }}>
+                        <Text style={{ fontFamily: 'KohinoorBangla-Regular', color: "#C5505E" }}>
+                          {item.language}
+                        </Text>
+                      </View>
+                    </View>
+                  </View>
+                </TouchableOpacity>
+              </View>
+          )}
+        />
+      </View>
+    )
+  }
   return (
     // <>
     //   <ScrollView contentContainerStyle={{flexGrow: 1}}>
@@ -258,24 +377,24 @@ const HomeScreen = () => {
       <View style={{ height: 200 }}>
         {renderHeader(email)}
         {renderButtonSection()}
-
       </View>
       {/* Body section */}
-      <ScrollView style={{margintop: 12}}>
+      <ScrollView style={{ margintop: 12 }}>
         {/* My Books section */}
         <View>
           {renderMyBookSection()}
-
         </View>
-        
+        {/* Category section */}
+        <View style={{ marginTop: 24 }}>
+          <View>
+            {renderCategoryHeader()}
+          </View>
+          <View>
+            {renderCategoryData()}
+          </View>
+        </View>
       </ScrollView>
-
     </SafeAreaView>
-
-
-
-
-
   )
 }
 
@@ -318,5 +437,4 @@ const styles = StyleSheet.create({
     color: '#E0DACC',
     fontFamily: 'KohinoorBangla-Semibold'
   }
-
 })
