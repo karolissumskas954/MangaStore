@@ -48,7 +48,7 @@ const HomeScreen = () => {
       .then((querySnapshot) => {
         const items = []
         querySnapshot.forEach((doc) => {
-          const { title, uri, author, description, language, pages, postEmail, price, publisher } = doc.data()
+          const { title, uri, author, description, language, pages, postEmail, price, publisher, isbn } = doc.data()
           items.push({
             id: doc.id,
             title,
@@ -59,7 +59,8 @@ const HomeScreen = () => {
             pages,
             price,
             postEmail,
-            publisher
+            publisher,
+            isbn
           })
         })
         setBlogs(items)
@@ -75,28 +76,6 @@ const HomeScreen = () => {
 
   const [categories, setCategory] = React.useState(categoriesData);
   const [selectedCategory, setSelectedCategory] = React.useState(0);
-
-  const writeData = () => {
-    db.collection("manga").add({
-      title: "Fire Force, Vol. 12",
-      price: "€13,99",
-      author: "Ohkubo, Atsushi",
-      publisher: "Kodansha Comics",
-      language: "English",
-      pages: 192,
-      isbn: 9781632366634,
-      description: "Fire Force - The city of Tokyo is plagued by a deadly phenomenon: spontaneous human combustion! Fortunately, there is a special team to extinguish the inferno: Firemen! The 8 firefighters of the Special Fire Department are about to receive a unique addition. A boy named Shinra who has the power to run at rocket speed, leaving the famous 'devil footprints' (and destroying his shoes in the process). Can Shinra and his colleagues discover the source of this strange epidemic before the city burns down?",
-      postEmail: email,
-      uri: 'https://www.fujidream.lt/wp-content/uploads/2022/03/51Exv3HTPNL.jpg'
-
-    })
-      .then((docRef) => {
-        console.log("Document written with ID: ", docRef.id);
-      })
-      .catch((error) => {
-        console.error("Error adding document: ", error);
-      });
-  }
 
   const handleSignOut = () => {
     auth
@@ -228,7 +207,7 @@ const HomeScreen = () => {
                 return (
                   <TouchableOpacity
                     style={{ flex: 1, marginLeft: index == 0 ? 24 : 0, marginRight: 22 }}
-                    onPress={() => console.log("Edit book screen")}
+                    onPress={() => navigation.navigate('Edit', item)}
                   >
                     <Image
                       source={{ uri: item.uri }}
@@ -281,11 +260,11 @@ const HomeScreen = () => {
       end = 4
     } else if (selectedCategory == 1) {
       start = 4
-      end = 5
+      end = 7
 
     } else if (selectedCategory == 2) {
-      start = 5
-      end = 6
+      start = 7
+      end = 8
     }
     return (
       <View style={{ flex: 1, marginTop: 12, paddingLeft: 24 }}>
@@ -348,39 +327,6 @@ const HomeScreen = () => {
     )
   }
   return (
-    // <>
-    //   <ScrollView contentContainerStyle={{flexGrow: 1}}>
-    //   <View style={styles.container}>
-
-    //     <Text> Email: {email}</Text>
-    //     <TouchableOpacity
-    //       onPress={handleSignOut}
-    //       style={styles.button}
-    //     >
-    //       <Text style={styles.buttontext}>Sign Out</Text>
-    //     </TouchableOpacity>
-    //   </View>
-    //   <View style={styles.container}>
-    //     <Button
-    //       title='Add data'
-    //       onPress={writeData}
-    //     >
-    //     </Button>
-
-    //   <ScrollView horizontal={true} style={{width:"100%"}}>
-    //     <FlatList
-    //       data={blogs}
-    //       renderItem={({ item }) => (
-    //         <Image
-    //           style={styles.image}
-    //           source={{ uri: item.uri }}
-    //         />
-    //       )} />
-    //       </ScrollView>
-    //   </View>
-    //   </ScrollView>
-    // </>
-
     <SafeAreaView style={{ flex: 1, backgroundColor: '#1E1B26' }}>
       <View style={{ height: 200 }}>
         {renderHeader(email)}
@@ -406,8 +352,6 @@ const HomeScreen = () => {
             >
             <Text style={{color:'#E0DACC', textDecorationLine: 'underline', fontSize: 16, fontFamily: 'KohinoorBangla-Semibold' }}> More Books</Text>
             </TouchableOpacity>
-          
-
           </View>
         </View>
       </ScrollView>

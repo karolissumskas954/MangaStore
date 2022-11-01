@@ -45,6 +45,8 @@ const BookScreen = ({ route, navigation }) => {
     fetchBlogs();
   }, [])
 
+
+
   const LineDivider = () => {
     return (
       <View style={{ width: 1, paddingVertical: 5, }}>
@@ -167,7 +169,7 @@ const BookScreen = ({ route, navigation }) => {
   }
 
   function renderBottomButton() {
-    return(
+    return( 
       <View style={{flex:1, flexDirection:'row', marginTop: -20, marginBottom: 20}}>
         {/* BookMark */}
         <TouchableOpacity

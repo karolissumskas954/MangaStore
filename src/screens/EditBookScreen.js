@@ -5,46 +5,54 @@ import back_icon from './assets/img/back.png'
 import { db } from '../../firebase';
 import { auth } from '../../firebase';
 
-export default function AddBookScreen() {
+export default function ({ route, navigation }) {
+
+  const { 
+    id,
+    title,
+    uri,
+    author,
+    description,
+    language,
+    pages,
+    price,
+    postEmail,
+    isbn,
+    publisher } = route.params
+
+
   const email = auth.currentUser?.email;
-  const navigation = useNavigation();
 
-  const [title, setTitle] = useState('')
-  const [price, setPrice] = useState('')
-  const [author, setAuthor] = useState('')
-  const [publisher, setPublisher] = useState("")
-  const [language, setLanguage] = useState("")
-  const [pages, setPages] = useState('')
-  const [isbn, setIsbn] = useState('')
-  const [description, setDescription] = useState("")
-  const [uri, setUri] = useState("")
+  const [title1, setTitle] = useState(title)
+  const [price1, setPrice] = useState(price)
+  const [author1, setAuthor] = useState(author)
+  const [publisher1, setPublisher] = useState(publisher)
+  const [language1, setLanguage] = useState(language)
+  const [pages1, setPages] = useState(pages)
+  const [isbn1, setIsbn] = useState(isbn)
+  const [description1, setDescription] = useState(description)
+  const [uri1, setUri] = useState(uri)
 
-  // const [title, setTitle] = useState('Orochi The Perfect Edition, Vol. 1')
-  // const [price, setPrice] = useState('€21,99')
-  // const [author, setAuthor] = useState('Umezz, Kazuo')
-  // const [publisher, setPublisher] = useState("VIZ")
-  // const [language, setLanguage] = useState("English")
-  // const [pages, setPages] = useState('320')
-  // const [isbn, setIsbn] = useState('9781974725830')
-  // const [description, setDescription] = useState("A mysterious young woman slips like a snake into the lives of unsuspecting people. Umezzo's classic horror manga begins with Sisters, where Orochi affects the lives of a brother and sister who couldn't be more alike… or more different. Next, in Bones, she helps a man come back to life after a terrible accident, but resurrection can be a deadly business…")
-  // const [uri, setUri] = useState("https://www.fujidream.lt/wp-content/uploads/2022/06/orochi-the-perfect-edition-vol-1-600x861.jpg")
+  const writeData = (id) => {
 
-  const writeData = () => {
-    db.collection("manga").add({
-      title: title,
-      price: price,
-      author: author,
-      publisher: publisher,
-      language: language,
-      pages: pages,
-      isbn: isbn,
-      description: description,
+    db.collection("manga")
+    .doc(id)
+    .delete()
+    .then(db.collection("manga").add({
+      title: title1,
+      price: price1,
+      author: author1,
+      publisher: publisher1,
+      language: language1,
+      pages: pages1,
+      isbn: isbn1,
+      description: description1,
       postEmail: email,
-      uri: uri
+      uri: uri1
     })
       .then((docRef) => {
         console.log("Document written with ID: ", docRef.id);
-        alert("Book Added")
+        alert("Book Edited")
         setTitle("")
         setPrice("")
         setAuthor("")
@@ -57,8 +65,19 @@ export default function AddBookScreen() {
       })
       .catch((error) => {
         console.error("Error adding document: ", error);
-      });
+      }))
+    .catch(() => alert("No"))
   }
+
+    
+  const deleteItem = (id) => {
+    db.collection("manga")
+    .doc(id)
+    .delete()
+    .then(() => alert("Item Deleted"))
+    .catch(() => alert("No"))
+  }
+
 
   function renderNavBar() {
     return (
@@ -73,7 +92,7 @@ export default function AddBookScreen() {
             style={{ width: 25, height: 25, tintColor: '#E0DACC' }}
           />
         </TouchableOpacity>
-        <Text style={{ fontFamily: 'KohinoorBangla-Semibold', fontSize: 22, color: '#E0DACC', marginLeft: 100 }}>Add Book</Text>
+        <Text style={{ fontFamily: 'KohinoorBangla-Semibold', fontSize: 22, color: '#E0DACC', marginLeft: 50 , width: 250}}>{title1}</Text>
       </View>
     )
   }
@@ -87,7 +106,7 @@ export default function AddBookScreen() {
             style={{ backgroundColor: '#E0DACC', paddingHorizontal: 15, paddingVertical: 10, borderRadius: 10, marginTop: 5, width: 200 }}
             placeholder='Enter Title here'
             placeholderTextColor={'#808080'}
-            value={title}
+            value={title1}
             onChangeText={text =>setTitle(text)}
           />
           {/* Author */}
@@ -95,7 +114,7 @@ export default function AddBookScreen() {
             style={{ backgroundColor: '#E0DACC', paddingHorizontal: 15, paddingVertical: 10, borderRadius: 10, marginTop: 5, }}
             placeholder='Enter Author here'
             placeholderTextColor={'#808080'}
-            value={author}
+            value={author1}
             onChangeText={text =>setAuthor(text)}
           />
           {/* Language  */}
@@ -103,7 +122,7 @@ export default function AddBookScreen() {
             style={{ backgroundColor: '#E0DACC', paddingHorizontal: 15, paddingVertical: 10, borderRadius: 10, marginTop: 5, }}
             placeholder='Enter Language here'
             placeholderTextColor={'#808080'}
-            value={language}
+            value={language1}
             onChangeText={text => setLanguage(text)}
           />
           {/* Price  */}
@@ -111,7 +130,7 @@ export default function AddBookScreen() {
             style={{ backgroundColor: '#E0DACC', paddingHorizontal: 15, paddingVertical: 10, borderRadius: 10, marginTop: 5 }}
             placeholder='Enter Price here'
             placeholderTextColor={'#808080'}
-            value={price}
+            value={price1}
             onChangeText={text => setPrice(text)}
           />
           {/* Pages  */}
@@ -119,13 +138,13 @@ export default function AddBookScreen() {
             style={{ backgroundColor: '#E0DACC', paddingHorizontal: 15, paddingVertical: 10, borderRadius: 10, marginTop: 5, }}
             placeholder='Enter Pages here'
             placeholderTextColor={'#808080'}
-            value={pages}
+            value={pages1}
             onChangeText={text => setPages(text)}
           />
         </View>
         <TouchableOpacity style={{}}>
           <Image
-            source={{ uri: uri == '' ? 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR2D4asDbDXWzTnoqacip37NbQgwMAJQ2YkrmkKayU2IRWyEgba2EpenRXPsB6TV-8fI4M&usqp=CAU' : uri }}
+            source={{ uri: uri1 == '' ? 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR2D4asDbDXWzTnoqacip37NbQgwMAJQ2YkrmkKayU2IRWyEgba2EpenRXPsB6TV-8fI4M&usqp=CAU' : uri1 }}
             resizeMode='contain'
             style={{ flex: 1, width: 150, height: 230 }}
           />
@@ -144,7 +163,7 @@ export default function AddBookScreen() {
           style={{ backgroundColor: '#E0DACC', paddingHorizontal: 15, paddingVertical: 10, borderRadius: 10, marginTop: 5, }}
           placeholder='Enter ISBN here'
           placeholderTextColor={'#808080'}
-          value={isbn}
+          value={isbn1}
           onChangeText={text => setIsbn(text)}
         />
         {/* Publisher  */}
@@ -152,7 +171,7 @@ export default function AddBookScreen() {
           style={{ backgroundColor: '#E0DACC', paddingHorizontal: 15, paddingVertical: 10, borderRadius: 10, marginTop: 5, }}
           placeholder='Enter Publisher here'
           placeholderTextColor={'#808080'}
-          value={publisher}
+          value={publisher1}
           onChangeText={text =>setPublisher(text)}
         />
         {/* URI  */}
@@ -160,7 +179,7 @@ export default function AddBookScreen() {
           style={{ backgroundColor: '#E0DACC', paddingHorizontal: 15, paddingVertical: 10, borderRadius: 10, marginTop: 5, }}
           placeholder='Enter URI here'
           placeholderTextColor={'#808080'}
-          value={uri}
+          value={uri1}
           onChangeText={text => setUri(text)}
         />
         {/* Description */}
@@ -168,15 +187,21 @@ export default function AddBookScreen() {
           style={{ backgroundColor: '#E0DACC', paddingHorizontal: 15, paddingVertical: 10, borderRadius: 10, marginTop: 5 }}
           placeholder='Enter Description here'
           placeholderTextColor={'#808080'}
-          value={description}
+          value={description1}
           onChangeText={text => setDescription(text)}
         />
         {/* Buttons  */}
         <TouchableOpacity
           style={{ backgroundColor: "#F96D41", padding: 14, borderRadius: 12, alignItems: 'center', justifyContent: 'center', marginTop: 20 }}
-          onPress={() => writeData()}
+          onPress={() => writeData(id)}
         >
-          <Text style={{ fontFamily: 'KohinoorBangla-Semibold', fontSize: 16, color: '#E0DACC' }}>ADD Book</Text>
+          <Text style={{ fontFamily: 'KohinoorBangla-Semibold', fontSize: 16, color: '#E0DACC' }}>Edit Book</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={{ backgroundColor: '#E0DACC', padding: 14, borderRadius: 12, alignItems: 'center', justifyContent: 'center', marginTop: 20, borderColor: "#F96D41", borderWidth: 1 }}
+          onPress={() => deleteItem(id)}
+        >
+          <Text style={{ fontFamily: 'KohinoorBangla-Semibold', fontSize: 16, color: "#F96D41" }}>Delete Book</Text>
         </TouchableOpacity>
       </View>
     )
