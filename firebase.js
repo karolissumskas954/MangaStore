@@ -2,6 +2,7 @@
 import * as firebase from "firebase";
 import "firebase/auth";
 import "firebase/firestore";
+import "firebase/database"
 
 
 // TODO: Add SDKs for Firebase products that you want to use
@@ -23,6 +24,8 @@ const firebaseConfig = {
 
     appId: "1:805686066755:web:ac7da591874a8a84641ef6",
 
+    databaseURL: "https://fir-auth-d0253-default-rtdb.europe-west1.firebasedatabase.app"
+
 };
 
 
@@ -34,7 +37,9 @@ if (!firebase.apps.length) {
     firebase.app(); // if already initialized, use that one
 }
 
-const db = firebase.firestore();
+// const db = firebase.firestore();
+//const db = firebase.firestore();
+const db = firebase.database();
 
 const auth = firebase.auth()
 

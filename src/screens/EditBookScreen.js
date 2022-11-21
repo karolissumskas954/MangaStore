@@ -4,9 +4,9 @@ import { useNavigation } from '@react-navigation/core'
 import back_icon from './assets/img/back.png'
 import { db } from '../../firebase';
 import { auth } from '../../firebase';
+import uuid from 'react-native-uuid';
 
 export default function ({ route, navigation }) {
-
   const { 
     id,
     title,
@@ -19,10 +19,8 @@ export default function ({ route, navigation }) {
     postEmail,
     isbn,
     publisher } = route.params
-
-
   const email = auth.currentUser?.email;
-
+  const [id1, setTid] = useState(id)
   const [title1, setTitle] = useState(title)
   const [price1, setPrice] = useState(price)
   const [author1, setAuthor] = useState(author)
@@ -34,11 +32,12 @@ export default function ({ route, navigation }) {
   const [uri1, setUri] = useState(uri)
 
   const writeData = (id) => {
-
-    db.collection("manga")
-    .doc(id)
-    .delete()
-    .then(db.collection("manga").add({
+    db.ref("manga/" + id).remove()
+    .then(() => {
+      const uid = uuid.v4()
+    db
+    .ref('manga/' + uid)
+    .set({
       title: title1,
       price: price1,
       author: author1,
@@ -50,34 +49,25 @@ export default function ({ route, navigation }) {
       postEmail: email,
       uri: uri1
     })
-      .then((docRef) => {
-        console.log("Document written with ID: ", docRef.id);
-        alert("Book Edited")
-        setTitle("")
-        setPrice("")
-        setAuthor("")
-        setPublisher("")
-        setLanguage("")
-        setPages("")
-        setIsbn("")
-        setDescription("")
-        setUri("")
-      })
-      .catch((error) => {
-        console.error("Error adding document: ", error);
-      }))
+    .then(() => {
+      console.log("Document Edited with ID: ", uid);
+      alert("Book Edited")
+    })
+    .catch((error) => {
+      console.error("Error adding document: ", error);
+    })})
     .catch(() => alert("No"))
   }
 
-    
   const deleteItem = (id) => {
-    db.collection("manga")
-    .doc(id)
-    .delete()
-    .then(() => alert("Item Deleted"))
+    db.ref("manga/" + id).remove()
+    .then(() => {
+      alert("Item Deleted")
+      navigation.replace("Home")
+
+    })
     .catch(() => alert("No"))
   }
-
 
   function renderNavBar() {
     return (

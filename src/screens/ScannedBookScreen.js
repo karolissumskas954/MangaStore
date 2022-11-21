@@ -1,12 +1,14 @@
-import { ImageBackground, StyleSheet, Text, TouchableOpacity, View, Image, ScrollView, Animated } from 'react-native'
+import { ImageBackground, StyleSheet, Text, TouchableOpacity, View, Image, ScrollView, Animated, Alert } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import { db } from '../../firebase';
+import uuid from 'react-native-uuid';
+import { auth } from '../../firebase';
 
 import back_icon from './assets/img/back.png'
 import bookmark_icon from './assets/img/bookmark_icon.png'
 
-const BookScreen = ({ route, navigation }) => {
-  const { id,
+const ScannedBookScreen = ({ route, navigation }) => {
+  const {
     title,
     uri,
     author,
@@ -14,8 +16,37 @@ const BookScreen = ({ route, navigation }) => {
     language,
     pages,
     price,
-    postEmail,
+    isbn,
     publisher } = route.params
+
+    const email = auth.currentUser?.email;
+
+
+    const writeData = () => {
+        const id = uuid.v4()
+        db
+        .ref('manga/' + id)
+        .set({
+          title: title,
+          price: price,
+          author: author,
+          publisher: publisher,
+          language: language,
+          pages: pages,
+          isbn: isbn,
+          description: description,
+          postEmail: email,
+          uri: uri
+        })
+        .then(() => {
+          console.log("Document written with ID: ", id);
+          alert("Book Added")
+          navigation.replace("Home")
+        })
+        .catch((error) => {
+          console.error("Error adding document: ", error);
+        });
+      }
 
   const LineDivider = () => {
     return (
@@ -155,9 +186,9 @@ const BookScreen = ({ route, navigation }) => {
         {/* Buy book  */}
         <TouchableOpacity
         style={{flex:1, backgroundColor: "#F96D41", marginHorizontal: 8, marginVertical: 8, borderRadius: 12, alignItems: 'center', justifyContent: 'center' }}
-        onPress={()=> console.log("Buy book")}
+        onPress={()=> writeData()}
         >
-          <Text style={{fontFamily: 'KohinoorBangla-Semibold', fontSize: 16, color: '#E0DACC' }}>Buy Book</Text>
+          <Text style={{fontFamily: 'KohinoorBangla-Semibold', fontSize: 16, color: '#E0DACC' }}>Add Book</Text>
         </TouchableOpacity>
       </View>
     )
@@ -180,5 +211,5 @@ const BookScreen = ({ route, navigation }) => {
     </View>
   )
 }
-export default BookScreen
+export default ScannedBookScreen
 const styles = StyleSheet.create({})

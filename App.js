@@ -9,7 +9,9 @@ import HomeScreen from './src/screens/HomeScreen';
 import AddBookScreen from './src/screens/AddBookScreen';
 import BookScreen from './src/screens/BookScreen';
 import MoreBooks from './src/screens/MoreBooks';
-import EditBook from './src/screens/EditBookScreen'
+import EditBook from './src/screens/EditBookScreen';
+import Scanner from './src/screens/Scanner'
+import ScannedBookScreen from './src/screens/ScannedBookScreen';
 
 
 const Stack = createNativeStackNavigator();
@@ -29,6 +31,8 @@ export default function App() {
         <Stack.Screen name="Book" component={BookScreen} />
         <Stack.Screen name="More" component={MoreBooks} />
         <Stack.Screen name="Edit" component={EditBook} />
+        <Stack.Screen name="Scan" component={Scanner} />
+        <Stack.Screen name="ScannedBook" component={ScannedBookScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

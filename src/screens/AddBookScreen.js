@@ -4,33 +4,37 @@ import { useNavigation } from '@react-navigation/core'
 import back_icon from './assets/img/back.png'
 import { db } from '../../firebase';
 import { auth } from '../../firebase';
+import uuid from 'react-native-uuid';
 
 export default function AddBookScreen() {
   const email = auth.currentUser?.email;
   const navigation = useNavigation();
 
-  const [title, setTitle] = useState('')
-  const [price, setPrice] = useState('')
-  const [author, setAuthor] = useState('')
-  const [publisher, setPublisher] = useState("")
-  const [language, setLanguage] = useState("")
-  const [pages, setPages] = useState('')
-  const [isbn, setIsbn] = useState('')
-  const [description, setDescription] = useState("")
-  const [uri, setUri] = useState("")
+  // const [title, setTitle] = useState('')
+  // const [price, setPrice] = useState('')
+  // const [author, setAuthor] = useState('')
+  // const [publisher, setPublisher] = useState("")
+  // const [language, setLanguage] = useState("")
+  // const [pages, setPages] = useState('')
+  // const [isbn, setIsbn] = useState('')
+  // const [description, setDescription] = useState("")
+  // const [uri, setUri] = useState("")
 
-  // const [title, setTitle] = useState('Orochi The Perfect Edition, Vol. 1')
-  // const [price, setPrice] = useState('€21,99')
-  // const [author, setAuthor] = useState('Umezz, Kazuo')
-  // const [publisher, setPublisher] = useState("VIZ")
-  // const [language, setLanguage] = useState("English")
-  // const [pages, setPages] = useState('320')
-  // const [isbn, setIsbn] = useState('9781974725830')
-  // const [description, setDescription] = useState("A mysterious young woman slips like a snake into the lives of unsuspecting people. Umezzo's classic horror manga begins with Sisters, where Orochi affects the lives of a brother and sister who couldn't be more alike… or more different. Next, in Bones, she helps a man come back to life after a terrible accident, but resurrection can be a deadly business…")
-  // const [uri, setUri] = useState("https://www.fujidream.lt/wp-content/uploads/2022/06/orochi-the-perfect-edition-vol-1-600x861.jpg")
+  const [title, setTitle] = useState('Hell’s Paradise Jigokuraku, Vol. 1')
+  const [price, setPrice] = useState('€14,99')
+  const [author, setAuthor] = useState('Kaku, Juji')
+  const [publisher, setPublisher] = useState("VIZ")
+  const [language, setLanguage] = useState("English")
+  const [pages, setPages] = useState('208')
+  const [isbn, setIsbn] = useState('9781974713202')
+  const [description, setDescription] = useState("Hell’s Paradise Jigokuraku – Gabimaru the Hollow is one of the most brutal assassins to ever come out of the ninja village of Iwagakure. He is ruthlessly efficient, but is sentenced to death for treason. He has only one hope - to earn his freedom, he must travel to a long-hidden island and recover the elixir that will make the shogun immortal. Failure is not an option. On this island, heaven and hell are just a hair's breadth away.")
+  const [uri, setUri] = useState("https://www.fujidream.lt/wp-content/uploads/2022/05/81keV50g-yL-768x1102.jpg")
 
   const writeData = () => {
-    db.collection("manga").add({
+    const id = uuid.v4()
+    db
+    .ref('manga/' + id)
+    .set({
       title: title,
       price: price,
       author: author,
@@ -42,22 +46,23 @@ export default function AddBookScreen() {
       postEmail: email,
       uri: uri
     })
-      .then((docRef) => {
-        console.log("Document written with ID: ", docRef.id);
-        alert("Book Added")
-        setTitle("")
-        setPrice("")
-        setAuthor("")
-        setPublisher("")
-        setLanguage("")
-        setPages("")
-        setIsbn("")
-        setDescription("")
-        setUri("")
-      })
-      .catch((error) => {
-        console.error("Error adding document: ", error);
-      });
+    .then(() => {
+      console.log("Document written with ID: ", id);
+      alert("Book Added")
+      setTitle("")
+      setPrice("")
+      setAuthor("")
+      setPublisher("")
+      setLanguage("")
+      setPages("")
+      setIsbn("")
+      setDescription("")
+      setUri("")
+      navigation.replace("Home")
+    })
+    .catch((error) => {
+      console.error("Error adding document: ", error);
+    });
   }
 
   function renderNavBar() {

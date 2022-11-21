@@ -9,6 +9,7 @@ import {
   Item,
   ScrollView,
   SafeAreaView,
+  StatusBar
 } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import { auth } from '../../firebase';
@@ -18,11 +19,11 @@ import { db } from '../../firebase';
 import { LogBox } from 'react-native';
 LogBox.ignoreLogs(["AsyncStorage has been extracted from react-native core and will be removed in a future release. It can now be installed and imported from '@react-native-async-storage/async-storage' instead of 'react-native'. See https://github.com/react-native-async-storage/async-storage"]); // Ignore log notification by message
 LogBox.ignoreLogs(["VirtualizedLists should never be nested inside plain ScrollViews with the same orientation because it can break windowing and other functionality - use another VirtualizedList-backed container instead."]); // Ignore log notification by message
-import claim_icon from './assets/img/claim_icon.png'
 import logOutImg from './assets/img/logout.png'
-import point_icon from './assets/img/point_icon.png'
-import card_icon from './assets/img/card_icon.png'
+import add_icon from './assets/img/add.png'
 import page_icon from './assets/img/page.png'
+import scan_icon from './assets/img/scan.png'
+import book_icon from './assets/img/book.png'
 
 const HomeScreen = () => {
   const categoriesData = [
@@ -39,18 +40,19 @@ const HomeScreen = () => {
       categoryName: "Coming Soon"
     },
   ];
-
   const [blogs, setBlogs] = useState([])
 
   const fetchBlogs = async () => {
-    db.collection("manga")
-      .get()
-      .then((querySnapshot) => {
+    var query = db.ref("manga").orderByKey();
+    query.once("value")
+      .then(function (snapshot) {
         const items = []
-        querySnapshot.forEach((doc) => {
-          const { title, uri, author, description, language, pages, postEmail, price, publisher, isbn } = doc.data()
+        snapshot.forEach(function (childSnapshot) {
+          var key = childSnapshot.key;
+          //console.log(key)
+          const { title, uri, author, description, language, pages, postEmail, price, publisher, isbn } = childSnapshot.val()
           items.push({
-            id: doc.id,
+            id: key,
             title,
             uri,
             author,
@@ -62,8 +64,9 @@ const HomeScreen = () => {
             publisher,
             isbn
           })
-        })
+        });
         setBlogs(items)
+        //console.log(items.id)
       })
   }
   useEffect(() => {
@@ -72,7 +75,6 @@ const HomeScreen = () => {
 
   const email = auth.currentUser?.email;
   const navigation = useNavigation()
-
 
   const [categories, setCategory] = React.useState(categoriesData);
   const [selectedCategory, setSelectedCategory] = React.useState(0);
@@ -88,15 +90,17 @@ const HomeScreen = () => {
 
   function renderHeader(profile) {
     return (
-      <View style={{ flex: 1,
+      <View style={{
+        flex: 1,
         flexDirection: 'row',
         paddingHorizontal: 24,
-        alignItems: 'center'}}>
+        alignItems: 'center'
+      }}>
         {/* Greetings */}
         <View style={{ flex: 1 }}>
           <View>
-            <Text style={{fontSize: 16,lineHeight: 22,color: '#E0DACC',fontFamily: 'KohinoorBangla-Regular'}}>Good Morning</Text>
-            <Text style={{fontSize: 22,lineHeight: 25,color: '#E0DACC',fontFamily: 'KohinoorBangla-Semibold'}}>{profile}</Text>
+            <Text style={{ fontSize: 16, lineHeight: 22, color: '#E0DACC', fontFamily: 'KohinoorBangla-Regular' }}>Good Morning</Text>
+            <Text style={{ fontSize: 22, lineHeight: 25, color: '#E0DACC', fontFamily: 'KohinoorBangla-Semibold' }}>{profile}</Text>
           </View>
         </View>
         {/* Log out */}
@@ -117,7 +121,7 @@ const HomeScreen = () => {
               <Image
                 source={logOutImg}
                 resizeMode="contain"
-                style={{ width: 20, height: 20, marginLeft: 5 }}
+                style={{ width: 20, height: 20, marginLeft: 5, tintColor: "#E0DACC"}}
               />
             </View>
             <Text style={{ color: '#E0DACC', fontFamily: 'KohinoorBangla-Regular', marginLeft: 8 }}>Log Out</Text>
@@ -140,6 +144,7 @@ const HomeScreen = () => {
       <View
         style={{ flex: 1, justifyContent: 'center', padding: 24 }}
       >
+        <StatusBar barStyle="light-content" />
         <View style={{ flexDirection: 'row', height: 70, backgroundColor: '#25282F', borderRadius: 12 }}>
           {/* Add book */}
           <TouchableOpacity
@@ -147,41 +152,41 @@ const HomeScreen = () => {
             onPress={() => navigation.replace("Add")}>
             <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
               <Image
-                source={claim_icon}
+                source={add_icon}
                 resizeMode="contain"
-                style={{ width: 30, height: 30 }}
+                style={{ width: 30, height: 30, tintColor: "#E0DACC" }}
               />
-              <Text style={{ merginLeft: 8, fontFamily: 'KohinoorBangla-Light', color: '#E0DACC' }}>Add book</Text>
+              <Text style={{ merginLeft: 8, fontFamily: 'KohinoorBangla-Light', color: '#E0DACC' }}>  Add book</Text>
             </View>
           </TouchableOpacity>
           {/* Line Divider */}
           <LineDivider />
-          {/* Get points */}
+          {/* all books */}
           <TouchableOpacity
             style={{ flex: 1 }}
             onPress={() => navigation.replace("More")}>
             <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
               <Image
-                source={point_icon}
+                source={book_icon}
                 resizeMode="contain"
-                style={{ width: 30, height: 30 }}
+                style={{ width: 30, height: 30 ,tintColor: "#E0DACC"}}
               />
-              <Text style={{ merginLeft: 8, fontFamily: 'KohinoorBangla-Light', color: '#E0DACC' }}>All Books</Text>
+              <Text style={{ merginLeft: 8, fontFamily: 'KohinoorBangla-Light', color: '#E0DACC' }}>  All Books</Text>
             </View>
           </TouchableOpacity>
           {/* Line Divider */}
           <LineDivider />
-          {/* My card */}
+          {/* Scanner */}
           <TouchableOpacity
             style={{ flex: 1 }}
-            onPress={() => console.log("My card")}>
+            onPress={() =>  navigation.navigate("Scan")}>
             <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
               <Image
-                source={card_icon}
+                source={scan_icon}
                 resizeMode="contain"
-                style={{ width: 30, height: 30 }}
+                style={{ width: 30, height: 30, tintColor: "#E0DACC" }}
               />
-              <Text style={{ merginLeft: 8, fontFamily: 'KohinoorBangla-Light', color: '#E0DACC' }}>My card</Text>
+              <Text style={{ merginLeft: 8, fontFamily: 'KohinoorBangla-Light', color: '#E0DACC' }}>  Scan book</Text>
             </View>
           </TouchableOpacity>
         </View>
@@ -272,55 +277,55 @@ const HomeScreen = () => {
           data={blogs.slice(start, end)}
           showsVerticalScrollIndicator={false}
           renderItem={({ item }) => (
-              <View style={{ marginVertical: 8 }}>
-                <TouchableOpacity
-                  style={{ flex: 1, flexDirection: 'row' }}
-                  onPress={() => navigation.navigate("Book", item)}
-                >
-                  {/* Book cover  */}
-                  <Image
-                    source={{ uri: item.uri }}
-                    resizeMode='cover'
-                    style={{ width: 100, height: 150, borderRadius: 10 }}
-                  />
-                  <View style={{ flex: 1, marginLeft: 12 }}>
-                    {/* Book name and author  */}
-                    <View>
-                      <Text style={{ paddingRight: 24, color: '#E0DACC', fontFamily: 'KohinoorBangla-Semibold' }}>{item.title}</Text>
-                      <Text style={{ fontFamily: 'KohinoorBangla-Regular', color: '#64676D' }}>{item.author}</Text>
-                    </View>
-                    {/* Book Info  */}
-                    <View style={{ flexDirection: 'row', marginTop: 12 }}>
-                      <Image
-                        source={page_icon}
-                        resizeMode="contain"
-                        style={{ width: 20, height: 20, tintColor: "#64676D" }}
-                      />
-                      <Text style={{ color: '#64676D', fontFamily: 'KohinoorBangla-Regular', paddingHorizontal: 12 }}>
-                        {item.pages}
+            <View style={{ marginVertical: 8 }}>
+              <TouchableOpacity
+                style={{ flex: 1, flexDirection: 'row' }}
+                onPress={() => navigation.navigate("Book", item)}
+              >
+                {/* Book cover  */}
+                <Image
+                  source={{ uri: item.uri }}
+                  resizeMode='cover'
+                  style={{ width: 100, height: 150, borderRadius: 10 }}
+                />
+                <View style={{ flex: 1, marginLeft: 12 }}>
+                  {/* Book name and author  */}
+                  <View>
+                    <Text style={{ paddingRight: 24, color: '#E0DACC', fontFamily: 'KohinoorBangla-Semibold' }}>{item.title}</Text>
+                    <Text style={{ fontFamily: 'KohinoorBangla-Regular', color: '#64676D' }}>{item.author}</Text>
+                  </View>
+                  {/* Book Info  */}
+                  <View style={{ flexDirection: 'row', marginTop: 12 }}>
+                    <Image
+                      source={page_icon}
+                      resizeMode="contain"
+                      style={{ width: 20, height: 20, tintColor: "#64676D" }}
+                    />
+                    <Text style={{ color: '#64676D', fontFamily: 'KohinoorBangla-Regular', paddingHorizontal: 12 }}>
+                      {item.pages}
+                    </Text>
+                  </View>
+                  {/* Data  */}
+                  <View style={{ flexDirection: 'row', marginTop: 8 }}>
+                    <View style={{ justifyContent: 'center', alignItems: 'center', padding: 8, marginRight: 8, backgroundColor: "#213432", height: 40, borderRadius: 12 }}>
+                      <Text style={{ fontFamily: 'KohinoorBangla-Regular', color: "#31Ad66" }}>
+                        {item.price}
                       </Text>
                     </View>
-                    {/* Data  */}
-                    <View style={{ flexDirection: 'row', marginTop: 8 }}>
-                      <View style={{ justifyContent: 'center', alignItems: 'center', padding: 8, marginRight: 8, backgroundColor: "#213432", height: 40, borderRadius: 12 }}>
-                        <Text style={{ fontFamily: 'KohinoorBangla-Regular', color: "#31Ad66" }}>
-                          {item.price}
-                        </Text>
-                      </View>
-                      <View style={{ justifyContent: 'center', alignItems: 'center', padding: 8, marginRight: 8, backgroundColor: "#31262F", height: 40, borderRadius: 12 }}>
-                        <Text style={{ fontFamily: 'KohinoorBangla-Regular', color: "#C5505E" }}>
-                          {item.language}
-                        </Text>
-                      </View>
-                      <View style={{ justifyContent: 'center', alignItems: 'center', padding: 8, marginRight: 8, backgroundColor: "#22273B", height: 40, borderRadius: 12 }}>
-                        <Text style={{ fontFamily: 'KohinoorBangla-Regular', color: "#424BAF" }}>
-                          {item.publisher}
-                        </Text>
-                      </View>
+                    <View style={{ justifyContent: 'center', alignItems: 'center', padding: 8, marginRight: 8, backgroundColor: "#31262F", height: 40, borderRadius: 12 }}>
+                      <Text style={{ fontFamily: 'KohinoorBangla-Regular', color: "#C5505E" }}>
+                        {item.language}
+                      </Text>
+                    </View>
+                    <View style={{ justifyContent: 'center', alignItems: 'center', padding: 8, marginRight: 8, backgroundColor: "#22273B", height: 40, borderRadius: 12 }}>
+                      <Text style={{ fontFamily: 'KohinoorBangla-Regular', color: "#424BAF" }}>
+                        {item.publisher}
+                      </Text>
                     </View>
                   </View>
-                </TouchableOpacity>
-              </View>
+                </View>
+              </TouchableOpacity>
+            </View>
           )}
         />
       </View>
@@ -346,11 +351,11 @@ const HomeScreen = () => {
           <View>
             {renderCategoryData()}
           </View>
-          <View style={{padding: 8, marginLeft: 12}}>
+          <View style={{ padding: 8, marginLeft: 12 }}>
             <TouchableOpacity
-            onPress={() => navigation.replace("More")}
+              onPress={() => navigation.replace("More")}
             >
-            <Text style={{color:'#E0DACC', textDecorationLine: 'underline', fontSize: 16, fontFamily: 'KohinoorBangla-Semibold' }}> More Books</Text>
+              <Text style={{ color: '#E0DACC', textDecorationLine: 'underline', fontSize: 16, fontFamily: 'KohinoorBangla-Semibold' }}> More Books</Text>
             </TouchableOpacity>
           </View>
         </View>

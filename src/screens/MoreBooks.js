@@ -11,27 +11,26 @@ export default function MoreBooks() {
     const navigation = useNavigation()
 
     const fetchBlogs = async () => {
-      db.collection("manga")
-        .get()
-        .then((querySnapshot) => {
-          const items = []
-          querySnapshot.forEach((doc) => {
-            const { title, uri, author, description, language, pages, postEmail, price, publisher } = doc.data()
-            items.push({
-              id: doc.id,
-              title,
-              uri,
-              author,
-              description,
-              language,
-              pages,
-              price,
-              postEmail,
-              publisher
-            })
+      db.ref('manga/').once('value', function (snapshot) {
+        const items = []
+        snapshot.forEach((doc) => {
+          const { title, uri, author, description, language, pages, postEmail, price, publisher, isbn } = doc.val()
+          items.push({
+            id: doc.id,
+            title,
+            uri,
+            author,
+            description,
+            language,
+            pages,
+            price,
+            postEmail,
+            publisher,
+            isbn
           })
-          setBlogs(items)
         })
+        setBlogs(items)
+      })
     }
     useEffect(() => {
       fetchBlogs();
