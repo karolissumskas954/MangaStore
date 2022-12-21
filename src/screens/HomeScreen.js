@@ -15,17 +15,27 @@ import React, { useState, useEffect } from 'react';
 import { auth } from '../../firebase';
 import { useNavigation } from '@react-navigation/core';
 import { db } from '../../firebase';
-
+import { COLORS, FONTS, SIZES, icons} from '../../constants';
 import { LogBox } from 'react-native';
 LogBox.ignoreLogs(["AsyncStorage has been extracted from react-native core and will be removed in a future release. It can now be installed and imported from '@react-native-async-storage/async-storage' instead of 'react-native'. See https://github.com/react-native-async-storage/async-storage"]); // Ignore log notification by message
 LogBox.ignoreLogs(["VirtualizedLists should never be nested inside plain ScrollViews with the same orientation because it can break windowing and other functionality - use another VirtualizedList-backed container instead."]); // Ignore log notification by message
-import logOutImg from './assets/img/logout.png'
-import add_icon from './assets/img/add.png'
-import page_icon from './assets/img/page.png'
-import scan_icon from './assets/img/scan.png'
-import book_icon from './assets/img/book.png'
+//LogBox.ignoreLogs(['fontFamily "Roboto-Regular" is not a system font and has not been loaded through Font.loadAsync.']);
+//LogBox.ignoreLogs(['fontFamily "Roboto-Bold" is not a system font and has not been loaded through Font.loadAsync.'])
+import { useFonts } from 'expo-font';
 
 const HomeScreen = () => {
+
+  const [loaded] = useFonts({
+    Roboto_Regular: require('../../assets/fonts/Roboto-Regular.ttf'),
+    Roboto_Bold: require('../../assets/fonts/Roboto-Bold.ttf'),
+  });
+
+  // if (!loaded){
+  //   return null;
+  // }
+
+
+
   const categoriesData = [
     {
       id: 0,
@@ -93,23 +103,23 @@ const HomeScreen = () => {
       <View style={{
         flex: 1,
         flexDirection: 'row',
-        paddingHorizontal: 24,
+        paddingHorizontal: SIZES.padding,
         alignItems: 'center'
       }}>
         {/* Greetings */}
         <View style={{ flex: 1 }}>
-          <View>
-            <Text style={{ fontSize: 16, lineHeight: 22, color: '#E0DACC', fontFamily: 'KohinoorBangla-Regular' }}>Good Morning</Text>
-            <Text style={{ fontSize: 22, lineHeight: 25, color: '#E0DACC', fontFamily: 'KohinoorBangla-Semibold' }}>{profile}</Text>
+          <View style={{ marginRight: SIZES.padding }}> 
+            <Text style={{ fontFamily: 'Roboto_Regular', fontSize: 22,color: COLORS.white }}>Good Morning</Text>
+            <Text style={{ fontFamily: 'Roboto_Bold', fontSize: 22, color: COLORS.white }}>{profile}</Text>
           </View>
         </View>
         {/* Log out */}
         <TouchableOpacity
           style={{
-            backgroundColor: '#F96D41',
+            backgroundColor: COLORS.primary,
             height: 40,
             paddingLeft: 3,
-            paddingRight: 12,
+            paddingRight: SIZES.radius,
             borderRadius: 20
           }}
           onPress={handleSignOut}
@@ -117,14 +127,14 @@ const HomeScreen = () => {
           <View
             style={{ flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}
           >
-            <View style={{ width: 30, height: 30, alignItems: 'center', justifyContent: 'center', borderRadius: 25, backgroundColor: 'rgba(0,0,0,0.5)' }}>
+            <View style={{ width: 30, height: 30, alignItems: 'center', justifyContent: 'center', borderRadius: 25, backgroundColor: COLORS.tone }}>
               <Image
-                source={logOutImg}
+                source={icons.logout_icon}
                 resizeMode="contain"
-                style={{ width: 20, height: 20, marginLeft: 5, tintColor: "#E0DACC"}}
+                style={{ width: 20, height: 20, marginLeft: 5, tintColor: COLORS.white}}
               />
             </View>
-            <Text style={{ color: '#E0DACC', fontFamily: 'KohinoorBangla-Regular', marginLeft: 8 }}>Log Out</Text>
+            <Text style={{ marginLeft: SIZES.base, color: COLORS.black, fontFamily: 'Roboto_Regular', fontSize: 16, }}>Log Out</Text>
           </View>
         </TouchableOpacity>
       </View>
@@ -133,7 +143,7 @@ const HomeScreen = () => {
   const LineDivider = () => {
     return (
       <View style={{ width: 1, paddingVertical: 18, }}>
-        <View style={{ flex: 1, borderLeftColor: '#64676D', borderLeftWidth: 1 }}>
+        <View style={{ flex: 1, borderLeftColor: COLORS.tone, borderLeftWidth: 1 }}>
         </View>
       </View>
     )
@@ -142,51 +152,54 @@ const HomeScreen = () => {
   function renderButtonSection() {
     return (
       <View
-        style={{ flex: 1, justifyContent: 'center', padding: 24 }}
+        style={{ flex: 1, justifyContent: 'center', padding: SIZES.padding }}
       >
         <StatusBar barStyle="light-content" />
-        <View style={{ flexDirection: 'row', height: 70, backgroundColor: '#25282F', borderRadius: 12 }}>
+        <View style={{ flexDirection: 'row', height: 70, backgroundColor: COLORS.primary, borderRadius: SIZES.radius }}>
           {/* Add book */}
           <TouchableOpacity
+          testID='addButton'
             style={{ flex: 1 }}
-            onPress={() => navigation.replace("Add")}>
+            onPress={() => navigation.navigate("Add")}>
             <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
               <Image
-                source={add_icon}
+                source={icons.add_icon}
                 resizeMode="contain"
-                style={{ width: 30, height: 30, tintColor: "#E0DACC" }}
+                style={{ width: 25, height: 25, tintColor: COLORS.black }}
               />
-              <Text style={{ merginLeft: 8, fontFamily: 'KohinoorBangla-Light', color: '#E0DACC' }}>  Add book</Text>
+              <Text style={{fontFamily: 'Roboto_Regular', fontSize: 14, color: COLORS.black }}>  Add book</Text>
             </View>
           </TouchableOpacity>
           {/* Line Divider */}
           <LineDivider />
           {/* all books */}
           <TouchableOpacity
+          testID='allBooksButton'
             style={{ flex: 1 }}
             onPress={() => navigation.replace("More")}>
             <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
               <Image
-                source={book_icon}
+                source={icons.book_icon}
                 resizeMode="contain"
-                style={{ width: 30, height: 30 ,tintColor: "#E0DACC"}}
+                style={{ width: 25, height: 25 ,tintColor: COLORS.black}}
               />
-              <Text style={{ merginLeft: 8, fontFamily: 'KohinoorBangla-Light', color: '#E0DACC' }}>  All Books</Text>
+              <Text style={{ fontFamily: 'Roboto_Regular', fontSize: 14, color: COLORS.black }}>  All Books</Text>
             </View>
           </TouchableOpacity>
           {/* Line Divider */}
           <LineDivider />
           {/* Scanner */}
           <TouchableOpacity
+          testID='scanButton'
             style={{ flex: 1 }}
             onPress={() =>  navigation.navigate("Scan")}>
             <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
               <Image
-                source={scan_icon}
+                source={icons.scan_icon}
                 resizeMode="contain"
-                style={{ width: 30, height: 30, tintColor: "#E0DACC" }}
+                style={{ width: 30, height: 30, tintColor: COLORS.black }}
               />
-              <Text style={{ merginLeft: 8, fontFamily: 'KohinoorBangla-Light', color: '#E0DACC' }}>  Scan book</Text>
+              <Text style={{ fontFamily: 'Roboto_Regular', fontSize: 14, color: COLORS.black }}> Scan book</Text>
             </View>
           </TouchableOpacity>
         </View>
@@ -199,7 +212,7 @@ const HomeScreen = () => {
       <View style={{ flex: 1 }}>
         {/* Header */}
         <View style={{ paddingHorizontal: 24, flexDirection: 'row', justifyContent: 'space-between' }}>
-          <Text style={{ fontSize: 22, fontFamily: 'KohinoorBangla-Semibold', color: "#E0DACC" }}>My Books</Text>
+          <Text style={{ fontFamily: 'Roboto_Bold', fontSize: 22, color: COLORS.white }}>My Books</Text>
         </View>
         {/* Books */}
         <View style={{ flex: 1, marginTop: 24 }}>
@@ -211,6 +224,7 @@ const HomeScreen = () => {
               if (email == item.postEmail) {
                 return (
                   <TouchableOpacity
+                  testID='editButton'
                     style={{ flex: 1, marginLeft: index == 0 ? 24 : 0, marginRight: 22 }}
                     onPress={() => navigation.navigate('Edit', item)}
                   >
@@ -243,11 +257,11 @@ const HomeScreen = () => {
               >
                 {
                   selectedCategory == item.id &&
-                  <Text style={{ color: '#E0DACC', fontFamily: 'KohinoorBangla-Regular' }}>{item.categoryName}</Text>
+                  <Text style={{ ...FONTS.h2, color: COLORS.white }}>{item.categoryName}</Text>
                 }
                 {
                   selectedCategory != item.id &&
-                  <Text style={{ color: '#64676D', fontFamily: 'KohinoorBangla-Regular' }}>{item.categoryName}</Text>
+                  <Text style={{ ...FONTS.h2, color: COLORS.lightGray }}>{item.categoryName}</Text>
                 }
               </TouchableOpacity>
             )}
@@ -279,6 +293,7 @@ const HomeScreen = () => {
           renderItem={({ item }) => (
             <View style={{ marginVertical: 8 }}>
               <TouchableOpacity
+              testID='bookButton'
                 style={{ flex: 1, flexDirection: 'row' }}
                 onPress={() => navigation.navigate("Book", item)}
               >
@@ -291,34 +306,34 @@ const HomeScreen = () => {
                 <View style={{ flex: 1, marginLeft: 12 }}>
                   {/* Book name and author  */}
                   <View>
-                    <Text style={{ paddingRight: 24, color: '#E0DACC', fontFamily: 'KohinoorBangla-Semibold' }}>{item.title}</Text>
-                    <Text style={{ fontFamily: 'KohinoorBangla-Regular', color: '#64676D' }}>{item.author}</Text>
+                    <Text style={{ paddingRight: SIZES.padding, ...FONTS.h2, color: COLORS.white }}>{item.title}</Text>
+                    <Text style={{ ...FONTS.h3, color: COLORS.lightGray }}>{item.author}</Text>
                   </View>
                   {/* Book Info  */}
                   <View style={{ flexDirection: 'row', marginTop: 12 }}>
                     <Image
-                      source={page_icon}
+                      source={icons.page_icon}
                       resizeMode="contain"
                       style={{ width: 20, height: 20, tintColor: "#64676D" }}
                     />
-                    <Text style={{ color: '#64676D', fontFamily: 'KohinoorBangla-Regular', paddingHorizontal: 12 }}>
+                    <Text style={{ ...FONTS.body4, color: COLORS.lightGray, paddingHorizontal: SIZES.radius }}>
                       {item.pages}
                     </Text>
                   </View>
                   {/* Data  */}
                   <View style={{ flexDirection: 'row', marginTop: 8 }}>
-                    <View style={{ justifyContent: 'center', alignItems: 'center', padding: 8, marginRight: 8, backgroundColor: "#213432", height: 40, borderRadius: 12 }}>
-                      <Text style={{ fontFamily: 'KohinoorBangla-Regular', color: "#31Ad66" }}>
+                    <View style={{ justifyContent: 'center', alignItems: 'center', padding: SIZES.base, marginRight: SIZES.base, backgroundColor: COLORS.darkGreen, height: 40, borderRadius: SIZES.radius }}>
+                      <Text style={{ ...FONTS.body3, color: COLORS.lightGreen }}>
                         {item.price}
                       </Text>
                     </View>
-                    <View style={{ justifyContent: 'center', alignItems: 'center', padding: 8, marginRight: 8, backgroundColor: "#31262F", height: 40, borderRadius: 12 }}>
-                      <Text style={{ fontFamily: 'KohinoorBangla-Regular', color: "#C5505E" }}>
+                    <View style={{ justifyContent: 'center', alignItems: 'center', padding: SIZES.base, marginRight: SIZES.base, backgroundColor: COLORS.darkRed, height: 40, borderRadius: SIZES.radius }}>
+                      <Text style={{ ...FONTS.body3, color: COLORS.lightRed }}>
                         {item.language}
                       </Text>
                     </View>
-                    <View style={{ justifyContent: 'center', alignItems: 'center', padding: 8, marginRight: 8, backgroundColor: "#22273B", height: 40, borderRadius: 12 }}>
-                      <Text style={{ fontFamily: 'KohinoorBangla-Regular', color: "#424BAF" }}>
+                    <View style={{ justifyContent: 'center', alignItems: 'center', padding: SIZES.base, marginRight: SIZES.base, backgroundColor: COLORS.darkBlue, height: 40, borderRadius: SIZES.radius }}>
+                      <Text style={{ ...FONTS.body3, color: COLORS.lightBlue }}>
                         {item.publisher}
                       </Text>
                     </View>
@@ -332,7 +347,7 @@ const HomeScreen = () => {
     )
   }
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: '#1E1B26' }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.background }}>
       <View style={{ height: 200 }}>
         {renderHeader(email)}
         {renderButtonSection()}
@@ -353,9 +368,10 @@ const HomeScreen = () => {
           </View>
           <View style={{ padding: 8, marginLeft: 12 }}>
             <TouchableOpacity
+            testID='moreButton'
               onPress={() => navigation.replace("More")}
             >
-              <Text style={{ color: '#E0DACC', textDecorationLine: 'underline', fontSize: 16, fontFamily: 'KohinoorBangla-Semibold' }}> More Books</Text>
+              <Text style={{ ...FONTS.body3, color: COLORS.lightGray, alignSelf: 'flex-start', textDecorationLine: 'underline' }}> More Books</Text>
             </TouchableOpacity>
           </View>
         </View>

@@ -1,10 +1,10 @@
 import { Button, TextInput, StyleSheet, Text, View, SafeAreaView, Image, TouchableOpacity, KeyboardAvoidingView, ScrollView, } from 'react-native'
 import React, { useState } from 'react'
 import { useNavigation } from '@react-navigation/core'
-import back_icon from './assets/img/back.png'
 import { db } from '../../firebase';
 import { auth } from '../../firebase';
 import uuid from 'react-native-uuid';
+import { COLORS, FONTS, SIZES, icons} from '../../constants';
 
 export default function AddBookScreen() {
   const email = auth.currentUser?.email;
@@ -73,12 +73,12 @@ export default function AddBookScreen() {
           onPress={() => navigation.replace("Home")}
         >
           <Image
-            source={back_icon}
+            source={icons.back_icon}
             resizeMode="contain"
             style={{ width: 25, height: 25, tintColor: '#E0DACC' }}
           />
         </TouchableOpacity>
-        <Text style={{ fontFamily: 'KohinoorBangla-Semibold', fontSize: 22, color: '#E0DACC', marginLeft: 100 }}>Add Book</Text>
+        <Text style={{ ...FONTS.h3, color: COLORS.white, marginLeft: 100 }}>Add Book</Text>
       </View>
     )
   }
@@ -181,7 +181,7 @@ export default function AddBookScreen() {
           style={{ backgroundColor: "#F96D41", padding: 14, borderRadius: 12, alignItems: 'center', justifyContent: 'center', marginTop: 20 }}
           onPress={() => writeData()}
         >
-          <Text style={{ fontFamily: 'KohinoorBangla-Semibold', fontSize: 16, color: '#E0DACC' }}>ADD Book</Text>
+          <Text style={{ ...FONTS.h3, color: COLORS.white }}>ADD Book</Text>
         </TouchableOpacity>
       </View>
     )

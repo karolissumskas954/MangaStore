@@ -1,10 +1,10 @@
 import { Button, TextInput, StyleSheet, Text, View, SafeAreaView, Image, TouchableOpacity, KeyboardAvoidingView, ScrollView, } from 'react-native'
 import React, { useState } from 'react'
 import { useNavigation } from '@react-navigation/core'
-import back_icon from './assets/img/back.png'
 import { db } from '../../firebase';
 import { auth } from '../../firebase';
 import uuid from 'react-native-uuid';
+import { COLORS, FONTS, SIZES, icons} from '../../constants';
 
 export default function ({ route, navigation }) {
   const { 
@@ -77,7 +77,7 @@ export default function ({ route, navigation }) {
           onPress={() => navigation.replace("Home")}
         >
           <Image
-            source={back_icon}
+            source={icons.back_icon}
             resizeMode="contain"
             style={{ width: 25, height: 25, tintColor: '#E0DACC' }}
           />

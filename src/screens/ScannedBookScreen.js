@@ -3,9 +3,7 @@ import React, { useState, useEffect } from 'react'
 import { db } from '../../firebase';
 import uuid from 'react-native-uuid';
 import { auth } from '../../firebase';
-
-import back_icon from './assets/img/back.png'
-import bookmark_icon from './assets/img/bookmark_icon.png'
+import { COLORS, FONTS, SIZES, icons} from '../../constants';
 
 const ScannedBookScreen = ({ route, navigation }) => {
   const {
@@ -77,7 +75,7 @@ const ScannedBookScreen = ({ route, navigation }) => {
             onPress={() => navigation.goBack()}
           >
             <Image
-              source={back_icon}
+              source={icons.back_icon}
               resizeMode="contain"
               style={{ width: 25, height: 25, tintColor: '#E0DACC' }}
             />
@@ -178,7 +176,7 @@ const ScannedBookScreen = ({ route, navigation }) => {
         onPress={() => console.log("Bookmark")}
         >
           <Image
-          source={bookmark_icon}
+          source={icons.bookmark_icon}
           resizeMode='contain'
           style={{ width: 25, height: 25, tintColor: '#E0DACC'}}
           />

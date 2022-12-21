@@ -1,9 +1,7 @@
 import { ImageBackground, StyleSheet, Text, TouchableOpacity, View, Image, ScrollView, Animated } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import { db } from '../../firebase';
-
-import back_icon from './assets/img/back.png'
-import bookmark_icon from './assets/img/bookmark_icon.png'
+import { COLORS, FONTS, SIZES, icons} from '../../constants';
 
 const BookScreen = ({ route, navigation }) => {
   const { id,
@@ -46,7 +44,7 @@ const BookScreen = ({ route, navigation }) => {
             onPress={() => navigation.goBack()}
           >
             <Image
-              source={back_icon}
+              source={icons.back_icon}
               resizeMode="contain"
               style={{ width: 25, height: 25, tintColor: '#E0DACC' }}
             />
@@ -61,7 +59,7 @@ const BookScreen = ({ route, navigation }) => {
           />
         </View>
         {/* Book name and author*/}
-        <View style={{ flex: 1.8, alignItems: 'center', justifyContent: 'center' }}>
+        <View style={{ flex: 1.8, alignItems: 'center', justifyContent: 'center', marginTop: 5 }}>
           <Text style={{ fontFamily: 'KohinoorBangla-Semibold', fontSize: 22, color: '#E0DACC' }}> {title}</Text>
           <Text style={{ fontFamily: 'KohinoorBangla-Regular', fontSize: 16, color: '#E0DACC' }}>{author}</Text>
         </View>
@@ -139,15 +137,28 @@ const BookScreen = ({ route, navigation }) => {
   }
 
   function renderBottomButton() {
+
+    const [color, setColor] = useState("#25282F")
+
+  
+
+
     return( 
       <View style={{flex:1, flexDirection:'row', marginTop: -20, marginBottom: 20}}>
         {/* BookMark */}
         <TouchableOpacity
-        style={{width: 60, backgroundColor: "#25282F", marginLeft: 24, marginVertical: 8, borderRadius: 12,alignContent: 'center', alignItems: 'center', justifyContent: 'center' }}
-        onPress={() => console.log("Bookmark")}
+        style={{width: 60, backgroundColor: color, marginLeft: 24, marginVertical: 8, borderRadius: 12,alignContent: 'center', alignItems: 'center', justifyContent: 'center' }}
+        onPress={() => {
+          
+          if(color == "#25282F"){
+            setColor('#F96D41')
+          } else if (color == '#F96D41'){
+            setColor("#25282F")
+          }
+          }}
         >
           <Image
-          source={bookmark_icon}
+          source={icons.bookmark_icon}
           resizeMode='contain'
           style={{ width: 25, height: 25, tintColor: '#E0DACC'}}
           />
@@ -155,7 +166,7 @@ const BookScreen = ({ route, navigation }) => {
         {/* Buy book  */}
         <TouchableOpacity
         style={{flex:1, backgroundColor: "#F96D41", marginHorizontal: 8, marginVertical: 8, borderRadius: 12, alignItems: 'center', justifyContent: 'center' }}
-        onPress={()=> console.log("Buy book")}
+        onPress={()=> alert("Item added to cart")}
         >
           <Text style={{fontFamily: 'KohinoorBangla-Semibold', fontSize: 16, color: '#E0DACC' }}>Buy Book</Text>
         </TouchableOpacity>

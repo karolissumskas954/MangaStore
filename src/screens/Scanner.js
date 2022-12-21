@@ -1,8 +1,10 @@
 import { Button, StyleSheet, Text, TouchableOpacity, View, Image } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import { BarCodeScanner } from 'expo-barcode-scanner'
-import back_icon from './assets/img/back.png'
 import { useNavigation } from '@react-navigation/core'
+import { COLORS, FONTS, SIZES, icons} from '../../constants';
+
+
 export default function Scanner() {
     const navigation = useNavigation();
     function renderNavBar() {
@@ -13,7 +15,7 @@ export default function Scanner() {
                     onPress={() => navigation.replace("Home")}
                 >
                     <Image
-                        source={back_icon}
+                        source={icons.back_icon}
                         resizeMode="contain"
                         style={{ width: 25, height: 25, tintColor: '#E0DACC' }}
                     />

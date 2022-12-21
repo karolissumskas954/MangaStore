@@ -1,9 +1,9 @@
-import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
 import React from 'react';
 
-import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { createStackNavigator } from "@react-navigation/stack";
+import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
+
 import LoginScreen from './src/screens/LoginScreen';
 import HomeScreen from './src/screens/HomeScreen';
 import AddBookScreen from './src/screens/AddBookScreen';
@@ -14,12 +14,20 @@ import Scanner from './src/screens/Scanner'
 import ScannedBookScreen from './src/screens/ScannedBookScreen';
 
 
-const Stack = createNativeStackNavigator();
+const Stack = createStackNavigator();
+
+const theme = {
+  ...DefaultTheme,
+  colors: {
+      ...DefaultTheme.colors,
+      border: "transparent"
+  }
+}
 
 
 export default function App() {
   return (
-    <NavigationContainer>
+    <NavigationContainer theme={theme}>
       <Stack.Navigator
       screenOptions={{
         headerShown: false

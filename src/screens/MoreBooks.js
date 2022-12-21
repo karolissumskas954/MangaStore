@@ -2,8 +2,7 @@ import { StyleSheet, Text, View, SafeAreaView,TouchableOpacity, Image, ScrollVie
 import React, { useState, useEffect } from 'react'
 import { useNavigation } from '@react-navigation/core';
 import { db } from '../../firebase';
-import back_icon from './assets/img/back.png'
-import page_icon from './assets/img/page.png'
+import { COLORS, FONTS, SIZES, icons} from '../../constants';
 
 export default function MoreBooks() {
 
@@ -43,7 +42,7 @@ export default function MoreBooks() {
             onPress={()=> navigation.replace("Home")}
           >
             <Image
-              source={back_icon}
+              source={icons.back_icon}
               resizeMode="contain"
               style={{ width: 25, height: 25, tintColor: '#E0DACC' }}
             />
@@ -76,7 +75,7 @@ export default function MoreBooks() {
                     {/* Book Info  */}
                     <View style={{ flexDirection: 'row', marginTop: 12 }}>
                       <Image
-                        source={page_icon}
+                        source={icons.page_icon}
                         resizeMode="contain"
                         style={{ width: 20, height: 20, tintColor: "#64676D" }}
                       />
