@@ -1,2 +1,1 @@
 # MangaStore
-# MangaStoreV2
