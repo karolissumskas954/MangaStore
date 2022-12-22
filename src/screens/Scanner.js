@@ -3,9 +3,16 @@ import React, { useState, useEffect } from 'react'
 import { BarCodeScanner } from 'expo-barcode-scanner'
 import { useNavigation } from '@react-navigation/core'
 import { COLORS, FONTS, SIZES, icons} from '../../constants';
+import { useFonts } from 'expo-font';
 
 
 export default function Scanner() {
+
+    const [loaded] = useFonts({
+        Roboto_Regular: require('../../assets/fonts/Roboto-Regular.ttf'),
+        Roboto_Bold: require('../../assets/fonts/Roboto-Bold.ttf'),
+      });
+
     const navigation = useNavigation();
     function renderNavBar() {
         return (
@@ -87,10 +94,10 @@ export default function Scanner() {
     }
     return (
         <>
-            <View style={{ backgroundColor: '#1E1B26' }}>
+            <View style={{ backgroundColor: COLORS.background }}>
                 {renderNavBar()}
             </View>
-            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#1E1B26' }}>
+            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: COLORS.background }}>
 
                 <View style={{ alignItems: 'center', justifyContent: 'center', height: 300, width: 300, overflow: 'hidden', borderRadius: 30, backgroundColor: 'tomato', marginTop: -100 }}>
                     <BarCodeScanner
@@ -105,19 +112,19 @@ export default function Scanner() {
 
                         }}
                     >
-                        <Text style={{ marginTop: 15, color: '#F96D41', fontSize: 22 }}>Tap to Scan Again</Text>
+                        <Text style={{ marginTop: 15, color: COLORS.primary, fontSize: 22, marginBottom:15 }}>Tap to Scan Again</Text>
                     </TouchableOpacity>}
                 <View style={{ flex: 0.2, alignItems: 'center', justifyContent: 'center' }}>
-                    <Text style={{ fontSize: 22, color: "#E0DACC", fontFamily: 'KohinoorBangla-Semibold' }}>Book title: </Text>
-                    <Text style={{ marginTop: 10, fontSize: 16, color: "#E0DACC", fontFamily: 'KohinoorBangla-Regular' }}>{text}</Text>
+                    <Text style={{ fontFamily: 'Roboto_Bold', fontSize: 22, color: COLORS.white }}>Book title: </Text>
+                    <Text style={{ marginTop: 5, fontFamily: 'Roboto_Regular', fontSize: 16, color: COLORS.white }}>{text}</Text>
                 </View>
-                <View style={{ flex: 0.2, alignItems: 'center', justifyContent: 'center' }}>
+                <View style={{ flex: 0.2, alignItems: 'center', justifyContent: 'center', marginTop: 15 }}>
                     {showButton &&
                         <TouchableOpacity
-                            style={{ backgroundColor: "#F96D41", borderRadius: 12, alignItems: 'center', justifyContent: 'center', width: 200, height: 50 }}
+                            style={{ backgroundColor: COLORS.primary, borderRadius: 12, alignItems: 'center', justifyContent: 'center', width: 200, height: 50 }}
                             onPress={() => navigation.navigate("ScannedBook", blogs)}
                         >
-                            <Text style={{ fontFamily: 'KohinoorBangla-Semibold', fontSize: 16, color: '#E0DACC' }}>Book details</Text>
+                            <Text style={{ fontFamily: 'Roboto_Bold', fontSize: 16, color: COLORS.white }}>Book details</Text>
                         </TouchableOpacity>}
                 </View>
             </View>

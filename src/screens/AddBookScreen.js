@@ -20,15 +20,15 @@ export default function AddBookScreen() {
   // const [description, setDescription] = useState("")
   // const [uri, setUri] = useState("")
 
-  const [title, setTitle] = useState('Hell’s Paradise Jigokuraku, Vol. 1')
-  const [price, setPrice] = useState('€14,99')
-  const [author, setAuthor] = useState('Kaku, Juji')
+  const [title, setTitle] = useState('Promised Neverland, Vol. 15')
+  const [price, setPrice] = useState('€12,99')
+  const [author, setAuthor] = useState('Kaiu Shirai')
   const [publisher, setPublisher] = useState("VIZ")
   const [language, setLanguage] = useState("English")
-  const [pages, setPages] = useState('208')
-  const [isbn, setIsbn] = useState('9781974713202')
-  const [description, setDescription] = useState("Hell’s Paradise Jigokuraku – Gabimaru the Hollow is one of the most brutal assassins to ever come out of the ninja village of Iwagakure. He is ruthlessly efficient, but is sentenced to death for treason. He has only one hope - to earn his freedom, he must travel to a long-hidden island and recover the elixir that will make the shogun immortal. Failure is not an option. On this island, heaven and hell are just a hair's breadth away.")
-  const [uri, setUri] = useState("https://www.fujidream.lt/wp-content/uploads/2022/05/81keV50g-yL-768x1102.jpg")
+  const [pages, setPages] = useState('192')
+  const [isbn, setIsbn] = useState('9781974714995')
+  const [description, setDescription] = useState("Promised Neverland - An orphanage sits in the middle of the forest. The orphans are looked after by a kind-hearted teacher. Every month a child is adopted by a rich family. It seems everyone will get a happy ending... \nBut everything changes when the three orphans see their friend fall into the jaws of demons instead of into the loving arms of their guardians. \nWill Emma, ​​Norman and Ray manage to escape with the other 37 orphans? \nOne of the most intense manga of 2019. \nThose who liked Attack on Titan and Made in Abyss will like this story")
+  const [uri, setUri] = useState("https://www.fujidream.lt/wp-content/uploads/2021/08/81Zx77MdCL-600x900.jpg")
 
   const writeData = () => {
     const id = uuid.v4()

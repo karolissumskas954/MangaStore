@@ -19,8 +19,8 @@ import { COLORS, FONTS, SIZES, icons} from '../../constants';
 import { LogBox } from 'react-native';
 LogBox.ignoreLogs(["AsyncStorage has been extracted from react-native core and will be removed in a future release. It can now be installed and imported from '@react-native-async-storage/async-storage' instead of 'react-native'. See https://github.com/react-native-async-storage/async-storage"]); // Ignore log notification by message
 LogBox.ignoreLogs(["VirtualizedLists should never be nested inside plain ScrollViews with the same orientation because it can break windowing and other functionality - use another VirtualizedList-backed container instead."]); // Ignore log notification by message
-//LogBox.ignoreLogs(['fontFamily "Roboto-Regular" is not a system font and has not been loaded through Font.loadAsync.']);
-//LogBox.ignoreLogs(['fontFamily "Roboto-Bold" is not a system font and has not been loaded through Font.loadAsync.'])
+LogBox.ignoreLogs(['fontFamily "Roboto-Regular" is not a system font and has not been loaded through Font.loadAsync.']);
+LogBox.ignoreLogs(['fontFamily "Roboto-Bold" is not a system font and has not been loaded through Font.loadAsync.'])
 import { useFonts } from 'expo-font';
 
 const HomeScreen = () => {
@@ -29,12 +29,6 @@ const HomeScreen = () => {
     Roboto_Regular: require('../../assets/fonts/Roboto-Regular.ttf'),
     Roboto_Bold: require('../../assets/fonts/Roboto-Bold.ttf'),
   });
-
-  // if (!loaded){
-  //   return null;
-  // }
-
-
 
   const categoriesData = [
     {
@@ -59,7 +53,6 @@ const HomeScreen = () => {
         const items = []
         snapshot.forEach(function (childSnapshot) {
           var key = childSnapshot.key;
-          //console.log(key)
           const { title, uri, author, description, language, pages, postEmail, price, publisher, isbn } = childSnapshot.val()
           items.push({
             id: key,
@@ -76,7 +69,6 @@ const HomeScreen = () => {
           })
         });
         setBlogs(items)
-        //console.log(items.id)
       })
   }
   useEffect(() => {
@@ -85,7 +77,6 @@ const HomeScreen = () => {
 
   const email = auth.currentUser?.email;
   const navigation = useNavigation()
-
   const [categories, setCategory] = React.useState(categoriesData);
   const [selectedCategory, setSelectedCategory] = React.useState(0);
 
@@ -109,8 +100,8 @@ const HomeScreen = () => {
         {/* Greetings */}
         <View style={{ flex: 1 }}>
           <View style={{ marginRight: SIZES.padding }}> 
-            <Text style={{ fontFamily: 'Roboto_Regular', fontSize: 22,color: COLORS.white }}>Good Morning</Text>
-            <Text style={{ fontFamily: 'Roboto_Bold', fontSize: 22, color: COLORS.white }}>{profile}</Text>
+            <Text style={{ fontFamily: 'Roboto_Bold', fontSize: 22,color: COLORS.white }}>Good Morning</Text>
+            <Text style={{ fontFamily: 'Roboto_Bold', fontSize: 22, color: COLORS.tone }}>{profile}</Text>
           </View>
         </View>
         {/* Log out */}
@@ -134,7 +125,7 @@ const HomeScreen = () => {
                 style={{ width: 20, height: 20, marginLeft: 5, tintColor: COLORS.white}}
               />
             </View>
-            <Text style={{ marginLeft: SIZES.base, color: COLORS.black, fontFamily: 'Roboto_Regular', fontSize: 16, }}>Log Out</Text>
+            <Text style={{ marginLeft: SIZES.base, color: COLORS.white, fontFamily: 'Roboto_Regular', fontSize: 16, }}>Log Out</Text>
           </View>
         </TouchableOpacity>
       </View>
@@ -165,9 +156,9 @@ const HomeScreen = () => {
               <Image
                 source={icons.add_icon}
                 resizeMode="contain"
-                style={{ width: 25, height: 25, tintColor: COLORS.black }}
+                style={{ width: 25, height: 25, tintColor: COLORS.white }}
               />
-              <Text style={{fontFamily: 'Roboto_Regular', fontSize: 14, color: COLORS.black }}>  Add book</Text>
+              <Text style={{fontFamily: 'Roboto_Regular', fontSize: 14, color: COLORS.white }}>  Add book</Text>
             </View>
           </TouchableOpacity>
           {/* Line Divider */}
@@ -181,9 +172,9 @@ const HomeScreen = () => {
               <Image
                 source={icons.book_icon}
                 resizeMode="contain"
-                style={{ width: 25, height: 25 ,tintColor: COLORS.black}}
+                style={{ width: 25, height: 25 ,tintColor: COLORS.white}}
               />
-              <Text style={{ fontFamily: 'Roboto_Regular', fontSize: 14, color: COLORS.black }}>  All Books</Text>
+              <Text style={{ fontFamily: 'Roboto_Regular', fontSize: 14, color: COLORS.white }}>  All Books</Text>
             </View>
           </TouchableOpacity>
           {/* Line Divider */}
@@ -197,9 +188,9 @@ const HomeScreen = () => {
               <Image
                 source={icons.scan_icon}
                 resizeMode="contain"
-                style={{ width: 30, height: 30, tintColor: COLORS.black }}
+                style={{ width: 30, height: 30, tintColor: COLORS.white }}
               />
-              <Text style={{ fontFamily: 'Roboto_Regular', fontSize: 14, color: COLORS.black }}> Scan book</Text>
+              <Text style={{ fontFamily: 'Roboto_Regular', fontSize: 14, color: COLORS.white }}> Scan book</Text>
             </View>
           </TouchableOpacity>
         </View>
@@ -215,7 +206,7 @@ const HomeScreen = () => {
           <Text style={{ fontFamily: 'Roboto_Bold', fontSize: 22, color: COLORS.white }}>My Books</Text>
         </View>
         {/* Books */}
-        <View style={{ flex: 1, marginTop: 24 }}>
+        <View style={{ flex: 1, marginTop: 18 }}>
           <FlatList
             data={blogs}
             horizontal
@@ -257,11 +248,11 @@ const HomeScreen = () => {
               >
                 {
                   selectedCategory == item.id &&
-                  <Text style={{ ...FONTS.h2, color: COLORS.white }}>{item.categoryName}</Text>
+                  <Text style={{ fontFamily: 'Roboto_Bold', fontSize: 22, color: COLORS.white }}>{item.categoryName}</Text>
                 }
                 {
                   selectedCategory != item.id &&
-                  <Text style={{ ...FONTS.h2, color: COLORS.lightGray }}>{item.categoryName}</Text>
+                  <Text style={{ fontFamily: 'Roboto_Bold', fontSize: 22, color: COLORS.lightGray }}>{item.categoryName}</Text>
                 }
               </TouchableOpacity>
             )}
@@ -279,11 +270,11 @@ const HomeScreen = () => {
       end = 4
     } else if (selectedCategory == 1) {
       start = 4
-      end = 7
+      end = 8
 
     } else if (selectedCategory == 2) {
-      start = 7
-      end = 8
+      start = 8
+      end = 12
     }
     return (
       <View style={{ flex: 1, marginTop: 12, paddingLeft: 24 }}>
@@ -303,37 +294,37 @@ const HomeScreen = () => {
                   resizeMode='cover'
                   style={{ width: 100, height: 150, borderRadius: 10 }}
                 />
-                <View style={{ flex: 1, marginLeft: 12 }}>
+                <View style={{ flex: 1, marginLeft: 12, marginTop: -5}}>
                   {/* Book name and author  */}
                   <View>
-                    <Text style={{ paddingRight: SIZES.padding, ...FONTS.h2, color: COLORS.white }}>{item.title}</Text>
-                    <Text style={{ ...FONTS.h3, color: COLORS.lightGray }}>{item.author}</Text>
+                    <Text style={{ paddingRight: SIZES.padding, fontFamily: 'Roboto_Bold', fontSize: 22, color: COLORS.white }}>{item.title}</Text>
+                    <Text style={{ fontFamily: 'Roboto_Bold', fontSize: 16, color: COLORS.lightGray }}>{item.author}</Text>
                   </View>
                   {/* Book Info  */}
-                  <View style={{ flexDirection: 'row', marginTop: 12 }}>
+                  <View style={{ flexDirection: 'row', marginTop: 7}}>
                     <Image
                       source={icons.page_icon}
                       resizeMode="contain"
                       style={{ width: 20, height: 20, tintColor: "#64676D" }}
                     />
-                    <Text style={{ ...FONTS.body4, color: COLORS.lightGray, paddingHorizontal: SIZES.radius }}>
+                    <Text style={{ fontFamily: 'Roboto_Regular', fontSize: 14, color: COLORS.lightGray, paddingHorizontal: SIZES.radius }}>
                       {item.pages}
                     </Text>
                   </View>
                   {/* Data  */}
                   <View style={{ flexDirection: 'row', marginTop: 8 }}>
-                    <View style={{ justifyContent: 'center', alignItems: 'center', padding: SIZES.base, marginRight: SIZES.base, backgroundColor: COLORS.darkGreen, height: 40, borderRadius: SIZES.radius }}>
-                      <Text style={{ ...FONTS.body3, color: COLORS.lightGreen }}>
+                    <View style={{ justifyContent: 'center', alignItems: 'center', padding: SIZES.base, marginRight: 5, backgroundColor: COLORS.darkGreen, height: 40, borderRadius: SIZES.radius }}>
+                      <Text style={{ fontFamily: 'Roboto_Regular', fontSize: 12, color: COLORS.lightGreen }}>
                         {item.price}
                       </Text>
                     </View>
-                    <View style={{ justifyContent: 'center', alignItems: 'center', padding: SIZES.base, marginRight: SIZES.base, backgroundColor: COLORS.darkRed, height: 40, borderRadius: SIZES.radius }}>
-                      <Text style={{ ...FONTS.body3, color: COLORS.lightRed }}>
+                    <View style={{ justifyContent: 'center', alignItems: 'center', padding: SIZES.base, marginRight: 5, backgroundColor: COLORS.darkRed, height: 40, borderRadius: SIZES.radius }}>
+                      <Text style={{ fontFamily: 'Roboto_Regular', fontSize: 12, color: COLORS.lightRed }}>
                         {item.language}
                       </Text>
                     </View>
-                    <View style={{ justifyContent: 'center', alignItems: 'center', padding: SIZES.base, marginRight: SIZES.base, backgroundColor: COLORS.darkBlue, height: 40, borderRadius: SIZES.radius }}>
-                      <Text style={{ ...FONTS.body3, color: COLORS.lightBlue }}>
+                    <View style={{ justifyContent: 'center', alignItems: 'center', padding: SIZES.base, marginRight: 5, backgroundColor: COLORS.darkBlue, height: 40, borderRadius: SIZES.radius }}>
+                      <Text style={{ fontFamily: 'Roboto_Regular', fontSize: 12, color: COLORS.lightBlue }}>
                         {item.publisher}
                       </Text>
                     </View>

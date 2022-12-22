@@ -3,8 +3,14 @@ import React, { useState, useEffect } from 'react'
 import { useNavigation } from '@react-navigation/core';
 import { db } from '../../firebase';
 import { COLORS, FONTS, SIZES, icons} from '../../constants';
+import { useFonts } from 'expo-font';
 
 export default function MoreBooks() {
+
+  const [loaded] = useFonts({
+    Roboto_Regular: require('../../assets/fonts/Roboto-Regular.ttf'),
+    Roboto_Bold: require('../../assets/fonts/Roboto-Bold.ttf'),
+  });
 
     const [blogs, setBlogs] = useState([])
     const navigation = useNavigation()
@@ -35,7 +41,7 @@ export default function MoreBooks() {
       fetchBlogs();
     }, [])
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: '#1E1B26', marginTop: -35}}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.background, marginTop: -35}}>
          <View style={{ flexDirection: 'row', paddingHorizontal: 12, height: 80, alignItems: 'flex-end' }}>
           <TouchableOpacity
             style={{ marginLeft: 18}}
@@ -44,10 +50,10 @@ export default function MoreBooks() {
             <Image
               source={icons.back_icon}
               resizeMode="contain"
-              style={{ width: 25, height: 25, tintColor: '#E0DACC' }}
+              style={{ width: 25, height: 25, tintColor: COLORS.white }}
             />
           </TouchableOpacity>
-            <Text style={{ fontFamily: 'KohinoorBangla-Semibold', fontSize: 22, color: '#E0DACC', marginLeft: 100 }}>More Books</Text>
+            <Text style={{ fontFamily: 'Roboto_Bold', fontSize: 22, color: COLORS.white, marginLeft: 75 }}>More Books</Text>
         </View>
     <ScrollView style={{ margintop: 12 }}>
     <View style={{ flex: 1, marginTop: 12, paddingLeft: 24 }}>
@@ -55,55 +61,56 @@ export default function MoreBooks() {
           data={blogs}
           showsVerticalScrollIndicator={false}
           renderItem={({ item }) => (
-              <View style={{ marginVertical: 8 }}>
-                <TouchableOpacity
-                  style={{ flex: 1, flexDirection: 'row' }}
-                  onPress={() => navigation.navigate("Book", item)}
-                >
-                  {/* Book cover  */}
+            <View style={{ marginVertical: 8 }}>
+            <TouchableOpacity
+            testID='bookButton'
+              style={{ flex: 1, flexDirection: 'row' }}
+              onPress={() => navigation.navigate("Book", item)}
+            >
+              {/* Book cover  */}
+              <Image
+                source={{ uri: item.uri }}
+                resizeMode='cover'
+                style={{ width: 100, height: 150, borderRadius: 10 }}
+              />
+              <View style={{ flex: 1, marginLeft: 12, marginTop: -5}}>
+                {/* Book name and author  */}
+                <View>
+                  <Text style={{ paddingRight: SIZES.padding, fontFamily: 'Roboto_Bold', fontSize: 22, color: COLORS.white }}>{item.title}</Text>
+                  <Text style={{ fontFamily: 'Roboto_Bold', fontSize: 16, color: COLORS.lightGray }}>{item.author}</Text>
+                </View>
+                {/* Book Info  */}
+                <View style={{ flexDirection: 'row', marginTop: 7}}>
                   <Image
-                    source={{ uri: item.uri }}
-                    resizeMode='cover'
-                    style={{ width: 100, height: 150, borderRadius: 10 }}
+                    source={icons.page_icon}
+                    resizeMode="contain"
+                    style={{ width: 20, height: 20, tintColor: "#64676D" }}
                   />
-                  <View style={{ flex: 1, marginLeft: 12 }}>
-                    {/* Book name and author  */}
-                    <View>
-                      <Text style={{ paddingRight: 24, color: '#E0DACC', fontFamily: 'KohinoorBangla-Semibold' }}>{item.title}</Text>
-                      <Text style={{ fontFamily: 'KohinoorBangla-Regular', color: '#64676D' }}>{item.author}</Text>
-                    </View>
-                    {/* Book Info  */}
-                    <View style={{ flexDirection: 'row', marginTop: 12 }}>
-                      <Image
-                        source={icons.page_icon}
-                        resizeMode="contain"
-                        style={{ width: 20, height: 20, tintColor: "#64676D" }}
-                      />
-                      <Text style={{ color: '#64676D', fontFamily: 'KohinoorBangla-Regular', paddingHorizontal: 12 }}>
-                        {item.pages}
-                      </Text>
-                    </View>
-                    {/* Data  */}
-                    <View style={{ flexDirection: 'row', marginTop: 8 }}>
-                      <View style={{ justifyContent: 'center', alignItems: 'center', padding: 8, marginRight: 8, backgroundColor: "#213432", height: 40, borderRadius: 12 }}>
-                        <Text style={{ fontFamily: 'KohinoorBangla-Regular', color: "#31Ad66" }}>
-                          {item.price}
-                        </Text>
-                      </View>
-                      <View style={{ justifyContent: 'center', alignItems: 'center', padding: 8, marginRight: 8, backgroundColor: "#31262F", height: 40, borderRadius: 12 }}>
-                        <Text style={{ fontFamily: 'KohinoorBangla-Regular', color: "#C5505E" }}>
-                          {item.language}
-                        </Text>
-                      </View>
-                      <View style={{ justifyContent: 'center', alignItems: 'center', padding: 8, marginRight: 8, backgroundColor: "#22273B", height: 40, borderRadius: 12 }}>
-                        <Text style={{ fontFamily: 'KohinoorBangla-Regular', color: "#424BAF" }}>
-                          {item.publisher}
-                        </Text>
-                      </View>
-                    </View>
+                  <Text style={{ fontFamily: 'Roboto_Regular', fontSize: 14, color: COLORS.lightGray, paddingHorizontal: SIZES.radius }}>
+                    {item.pages}
+                  </Text>
+                </View>
+                {/* Data  */}
+                <View style={{ flexDirection: 'row', marginTop: 8 }}>
+                  <View style={{ justifyContent: 'center', alignItems: 'center', padding: SIZES.base, marginRight: 5, backgroundColor: COLORS.darkGreen, height: 40, borderRadius: SIZES.radius }}>
+                    <Text style={{ fontFamily: 'Roboto_Regular', fontSize: 12, color: COLORS.lightGreen }}>
+                      {item.price}
+                    </Text>
                   </View>
-                </TouchableOpacity>
+                  <View style={{ justifyContent: 'center', alignItems: 'center', padding: SIZES.base, marginRight: 5, backgroundColor: COLORS.darkRed, height: 40, borderRadius: SIZES.radius }}>
+                    <Text style={{ fontFamily: 'Roboto_Regular', fontSize: 12, color: COLORS.lightRed }}>
+                      {item.language}
+                    </Text>
+                  </View>
+                  <View style={{ justifyContent: 'center', alignItems: 'center', padding: SIZES.base, marginRight: 5, backgroundColor: COLORS.darkBlue, height: 40, borderRadius: SIZES.radius }}>
+                    <Text style={{ fontFamily: 'Roboto_Regular', fontSize: 12, color: COLORS.lightBlue }}>
+                      {item.publisher}
+                    </Text>
+                  </View>
+                </View>
               </View>
+            </TouchableOpacity>
+          </View>
           )}
         />
       </View>

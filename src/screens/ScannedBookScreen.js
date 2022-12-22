@@ -4,8 +4,13 @@ import { db } from '../../firebase';
 import uuid from 'react-native-uuid';
 import { auth } from '../../firebase';
 import { COLORS, FONTS, SIZES, icons} from '../../constants';
+import { useFonts } from 'expo-font';
 
 const ScannedBookScreen = ({ route, navigation }) => {
+  const [loaded] = useFonts({
+    Roboto_Regular: require('../../assets/fonts/Roboto-Regular.ttf'),
+    Roboto_Bold: require('../../assets/fonts/Roboto-Bold.ttf'),
+  });
   const {
     title,
     uri,
@@ -16,10 +21,7 @@ const ScannedBookScreen = ({ route, navigation }) => {
     price,
     isbn,
     publisher } = route.params
-
     const email = auth.currentUser?.email;
-
-
     const writeData = () => {
         const id = uuid.v4()
         db
@@ -49,7 +51,7 @@ const ScannedBookScreen = ({ route, navigation }) => {
   const LineDivider = () => {
     return (
       <View style={{ width: 1, paddingVertical: 5, }}>
-        <View style={{ flex: 1, borderLeftColor: '#DCDCDC', borderLeftWidth: 1 }}>
+        <View style={{ flex: 1, borderLeftColor: COLORS.white, borderLeftWidth: 1 }}>
         </View>
       </View>
     )
@@ -67,17 +69,17 @@ const ScannedBookScreen = ({ route, navigation }) => {
           style={{ position: 'absolute', top: 0, right: 0, bottom: 0, left: 0 }}
         />
         {/* Color overlay */}
-        <View style={{ position: 'absolute', top: 0, right: 0, bottom: 0, left: 0, backgroundColor: "#1E1B26", opacity: 0.8 }}>
+        <View style={{ position: 'absolute', top: 0, right: 0, bottom: 0, left: 0, backgroundColor: COLORS.background, opacity: 0.8 }}>
         </View>
         <View style={{ flexDirection: 'row', paddingHorizontal: 12, height: 80, alignItems: 'flex-end' }}>
           <TouchableOpacity
-            style={{ marginLeft: 8, }}
+            style={{ marginLeft: 8 }}
             onPress={() => navigation.goBack()}
           >
             <Image
               source={icons.back_icon}
               resizeMode="contain"
-              style={{ width: 25, height: 25, tintColor: '#E0DACC' }}
+              style={{ width: 25, height: 25, tintColor: COLORS.white }}
             />
           </TouchableOpacity>
         </View>
@@ -90,28 +92,28 @@ const ScannedBookScreen = ({ route, navigation }) => {
           />
         </View>
         {/* Book name and author*/}
-        <View style={{ flex: 1.8, alignItems: 'center', justifyContent: 'center' }}>
-          <Text style={{ fontFamily: 'KohinoorBangla-Semibold', fontSize: 22, color: '#E0DACC' }}> {title}</Text>
-          <Text style={{ fontFamily: 'KohinoorBangla-Regular', fontSize: 16, color: '#E0DACC' }}>{author}</Text>
+        <View style={{ flex: 1.8, alignItems: 'center', justifyContent: 'center', marginTop: 5 }}>
+          <Text style={{ fontFamily: 'Roboto_Bold', fontSize: 22, color: COLORS.white }}> {title}</Text>
+          <Text style={{ fontFamily: 'Roboto_Bold', fontSize: 16, color: COLORS.white }}>{author}</Text>
         </View>
         {/* Book info  */}
         <View style={{ flexDirection: 'row', paddingVertical: 20, margin: 24, borderRadius: 12, backgroundColor: "rgba(0,0,0,0.6)" }}>
           {/* Price  */}
           <View style={{ flex: 1, alignItems: 'center' }}>
-            <Text style={{ fontFamily: 'KohinoorBangla-Semibold', fontSize: 16, color: '#E0DACC' }}>Price</Text>
-            <Text style={{ fontFamily: 'KohinoorBangla-Regular', fontSize: 14, color: '#E0DACC' }}>{price}</Text>
+            <Text style={{ fontFamily: 'Roboto_Bold', fontSize: 16, color: COLORS.white }}>Price</Text>
+            <Text style={{ fontFamily: 'Roboto_Regular', fontSize: 14, color: COLORS.white }}>{price}</Text>
           </View>
           <LineDivider />
           {/* Pages  */}
           <View style={{ flex: 1, alignItems: 'center' }}>
-            <Text style={{ fontFamily: 'KohinoorBangla-Semibold', fontSize: 16, color: '#E0DACC' }}>Pages</Text>
-            <Text style={{ fontFamily: 'KohinoorBangla-Regular', fontSize: 14, color: '#E0DACC' }}>{pages}</Text>
+            <Text style={{ fontFamily: 'Roboto_Bold', fontSize: 16, color: COLORS.white }}>Pages</Text>
+            <Text style={{ fontFamily: 'Roboto_Regular', fontSize: 14, color: COLORS.white }}>{pages}</Text>
           </View>
           <LineDivider />
           {/* Language */}
           <View style={{ flex: 1, alignItems: 'center' }}>
-            <Text style={{ fontFamily: 'KohinoorBangla-Semibold', fontSize: 16, color: '#E0DACC' }}>Language</Text>
-            <Text style={{ fontFamily: 'KohinoorBangla-Regular', fontSize: 14, color: '#E0DACC' }}>{language}</Text>
+            <Text style={{ fontFamily: 'Roboto_Bold', fontSize: 16, color: COLORS.white }}>Language</Text>
+            <Text style={{ fontFamily: 'Roboto_Regular', fontSize: 14, color: COLORS.white }}>{language}</Text>
           </View>
         </View>
       </View>
@@ -160,39 +162,47 @@ const ScannedBookScreen = ({ route, navigation }) => {
             {useNativeDriver: false}
           )}
         >
-          <Text style={{ fontFamily: 'KohinoorBangla-Semibold', fontSize: 22, color: '#E0DACC', marginBottom: 24 }}>Description</Text>
-          <Text style={{ fontFamily: 'KohinoorBangla-Regular', fontSize: 20, color: "#64676D" }}>{description}</Text>
+          <Text style={{ fontFamily: 'Roboto_Bold', fontSize: 22, color: COLORS.white, marginBottom: 10 }}>Description</Text>
+          <Text style={{ fontFamily: 'Roboto_Regular', fontSize: 20, color: "#64676D" }}>{description}</Text>
         </ScrollView>
       </View>
     )
   }
 
   function renderBottomButton() {
+    const [color, setColor] = useState("#25282F")
     return( 
-      <View style={{flex:1, flexDirection:'row', marginTop: -20, marginBottom: 20}}>
+      <View style={{flex:1, flexDirection:'row', marginTop: -5, marginBottom: 5}}>
         {/* BookMark */}
         <TouchableOpacity
-        style={{width: 60, backgroundColor: "#25282F", marginLeft: 24, marginVertical: 8, borderRadius: 12,alignContent: 'center', alignItems: 'center', justifyContent: 'center' }}
-        onPress={() => console.log("Bookmark")}
+        style={{width: 60, backgroundColor: color, marginLeft: 24, marginVertical: 8, borderRadius: 12,alignContent: 'center', alignItems: 'center', justifyContent: 'center' }}
+        onPress={() => {
+          
+          if(color == "#25282F"){
+            setColor(COLORS.primary)
+          } else if (color == COLORS.primary){
+            setColor("#25282F")
+          }
+          }}
         >
           <Image
           source={icons.bookmark_icon}
           resizeMode='contain'
-          style={{ width: 25, height: 25, tintColor: '#E0DACC'}}
+          style={{ width: 25, height: 25, tintColor: COLORS.white}}
           />
         </TouchableOpacity>
         {/* Buy book  */}
         <TouchableOpacity
-        style={{flex:1, backgroundColor: "#F96D41", marginHorizontal: 8, marginVertical: 8, borderRadius: 12, alignItems: 'center', justifyContent: 'center' }}
+        style={{flex:1, backgroundColor: COLORS.primary, marginHorizontal: 8, marginVertical: 8, borderRadius: 12, alignItems: 'center', justifyContent: 'center' }}
         onPress={()=> writeData()}
         >
-          <Text style={{fontFamily: 'KohinoorBangla-Semibold', fontSize: 16, color: '#E0DACC' }}>Add Book</Text>
+          <Text style={{fontFamily: 'Roboto_Bold', fontSize: 20, color: COLORS.white }}>Buy Book</Text>
         </TouchableOpacity>
       </View>
     )
   }
   return (
-    <View style={{ flex: 1, backgroundColor: "#1E1B26" }}>
+    <View style={{ flex: 1, backgroundColor: COLORS.background }}>
       {/* Book Cover */}
       <View style={{ flex: 4 }}>
         {renderBookInfoSection()}
