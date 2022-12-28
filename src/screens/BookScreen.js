@@ -2,6 +2,9 @@ import { ImageBackground, StyleSheet, Text, TouchableOpacity, View, Image, Scrol
 import React, { useState, useEffect } from 'react'
 import { COLORS, FONTS, SIZES, icons} from '../../constants';
 import { useFonts } from 'expo-font';
+import { db } from '../../firebase';
+import { auth } from '../../firebase';
+import uuid from 'react-native-uuid';
 
 const BookScreen = ({ route, navigation }) => {
 
@@ -17,8 +20,38 @@ const BookScreen = ({ route, navigation }) => {
     description,
     language,
     pages,
+    publisher,
+    isbn,
     price} = route.params
 
+  const email = auth.currentUser?.email;
+
+  const writeData = () => {
+    let lines = email.split('@');
+    //alert(lines[0])
+    const id = uuid.v4()
+    db
+    .ref('cart/' + lines[0] + '/' + id)
+    .set({
+      title: title,
+      price: price,
+      author: author,
+      publisher: publisher,
+      language: language,
+      pages: pages,
+      isbn: isbn,
+      description: description,
+      uri: uri
+    })
+    .then(() => {
+      console.log("Document written with ID: ", id);
+      alert("Book Added to Cart")
+      navigation.replace("Home")
+    })
+    .catch((error) => {
+      console.error("Error adding document: ", error);
+    });
+  }
   const LineDivider = () => {
     return (
       <View style={{ width: 1, paddingVertical: 5, }}>
@@ -72,7 +105,7 @@ const BookScreen = ({ route, navigation }) => {
           {/* Price  */}
           <View style={{ flex: 1, alignItems: 'center' }}>
             <Text style={{ fontFamily: 'Roboto_Bold', fontSize: 16, color: COLORS.white }}>Price</Text>
-            <Text style={{ fontFamily: 'Roboto_Regular', fontSize: 14, color: COLORS.white }}>{price}</Text>
+            <Text style={{ fontFamily: 'Roboto_Regular', fontSize: 14, color: COLORS.white }}>€{price}</Text>
           </View>
           <LineDivider />
           {/* Pages  */}
@@ -165,9 +198,9 @@ const BookScreen = ({ route, navigation }) => {
         {/* Buy book  */}
         <TouchableOpacity
         style={{flex:1, backgroundColor: COLORS.primary, marginHorizontal: 8, marginVertical: 8, borderRadius: 12, alignItems: 'center', justifyContent: 'center' }}
-        onPress={()=> alert("Item added to cart")}
+        onPress={()=> writeData()}
         >
-          <Text style={{fontFamily: 'Roboto_Bold', fontSize: 20, color: COLORS.white }}>Buy Book</Text>
+          <Text style={{fontFamily: 'Roboto_Bold', fontSize: 20, color: COLORS.white }}>Add to Cart</Text>
         </TouchableOpacity>
       </View>
     )

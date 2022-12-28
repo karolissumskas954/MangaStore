@@ -22,8 +22,15 @@ LogBox.ignoreLogs(["VirtualizedLists should never be nested inside plain ScrollV
 LogBox.ignoreLogs(['fontFamily "Roboto-Regular" is not a system font and has not been loaded through Font.loadAsync.']);
 LogBox.ignoreLogs(['fontFamily "Roboto-Bold" is not a system font and has not been loaded through Font.loadAsync.'])
 import { useFonts } from 'expo-font';
+import Modal from 'react-native-modal';
+import { copyStackTrace } from '@testing-library/react-native/build/helpers/errors';
+import { allowFontScaling } from 'deprecated-react-native-prop-types/DeprecatedTextPropTypes';
 
 const HomeScreen = () => {
+
+  const [deleteModal, setDeleteModal] = useState(false)
+  const [selItem, setSetItem] = useState('')
+
 
   const [loaded] = useFonts({
     Roboto_Regular: require('../../assets/fonts/Roboto-Regular.ttf'),
@@ -71,11 +78,51 @@ const HomeScreen = () => {
         setBlogs(items)
       })
   }
+  const email = auth.currentUser?.email;
+  const [cart, setCart] = useState([])
+
+  const fetchCart = async () => {
+    let lines = email.split('@');
+    var query = db.ref("cart/" + lines[0]).orderByKey();
+    query.once("value")
+      .then(function (snapshot) {
+        const items = []
+        snapshot.forEach(function (childSnapshot) {
+          var key = childSnapshot.key;
+          const { title, uri, author, description, language, pages, price, publisher, isbn } = childSnapshot.val()
+          items.push({
+            id: key,
+            title,
+            uri,
+            author,
+            description,
+            language,
+            pages,
+            price,
+            publisher,
+            isbn
+          })
+        });
+        setCart(items)
+      })
+  }
   useEffect(() => {
+    fetchCart();
     fetchBlogs();
   }, [])
 
-  const email = auth.currentUser?.email;
+
+  const deleteItemFromCart = () => {
+    let lines = email.split('@');
+    db.ref("cart/"+ lines[0] + "/" + selItem).remove()
+    .then(() => {
+      alert("Item Removed")
+      setSetItem("")
+      navigation.replace("Home")
+    })
+    .catch(() => alert("No"))
+  }
+
   const navigation = useNavigation()
   const [categories, setCategory] = React.useState(categoriesData);
   const [selectedCategory, setSelectedCategory] = React.useState(0);
@@ -89,6 +136,45 @@ const HomeScreen = () => {
       .catch((error) => alert(error.message));
   }
 
+
+  function renderDeleteModal() {
+    return (
+        <Modal
+            animationType='slide'
+            visible={deleteModal}
+            style={{ justifyContent: 'flex-end', margin: 0 }}>
+            <View
+                style={{
+                    backgroundColor: '#e2dfe7',
+                    height: '20%',
+                    borderTopStartRadius: 20,
+                    borderTopEndRadius: 20
+                }}>
+                <View style={{ flex: 0.3, justifyContent: 'center', alignItems: 'center' }}>
+                   <Text style={{fontFamily: 'Roboto_Regular', fontSize: 18,color: COLORS.black}}>Remove this item from cart?</Text>
+                </View>
+                <View style={{ flex: 0.4, justifyContent: 'center', alignItems: 'center' }}>
+                  <View style={{flexDirection: "row",flexWrap: "wrap"}}>
+                    <View style={{width: '50%', alignItems: 'center'}}>
+                      <TouchableOpacity style={{backgroundColor: COLORS.primary,width: '80%',padding: 10,borderRadius: 10, alignItems: 'center'}}
+                      onPress={() => {deleteItemFromCart()}}
+                      >
+                      <Text style={{fontFamily: 'Roboto_Bold', fontSize: 18,color: COLORS.white }}>Remove</Text>
+                      </TouchableOpacity>
+                    </View>
+                    <View style={{width: '50%', alignItems: 'center'}}>
+                      <TouchableOpacity style={{backgroundColor: COLORS.primary,width: '80%',padding: 10,borderRadius: 10, alignItems: 'center'}}
+                      onPress={() => {setDeleteModal(false)}}
+                      >
+                      <Text style={{fontFamily: 'Roboto_Bold', fontSize: 18,color: COLORS.white }}>Exit</Text>
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+                </View>
+            </View>
+        </Modal>
+    )
+}
   function renderHeader(profile) {
     return (
       <View style={{
@@ -158,7 +244,10 @@ const HomeScreen = () => {
                 resizeMode="contain"
                 style={{ width: 25, height: 25, tintColor: COLORS.white }}
               />
-              <Text style={{fontFamily: 'Roboto_Regular', fontSize: 14, color: COLORS.white }}>  Add book</Text>
+              <View style={{flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+              <Text style={{fontFamily: 'Roboto_Regular', fontSize: 14, color: COLORS.white }}>  Check Out</Text>
+              {/* <Text style={{fontFamily: 'Roboto_Regular', fontSize: 14, color: COLORS.white }}>  €{cost}</Text> */}
+              </View>
             </View>
           </TouchableOpacity>
           {/* Line Divider */}
@@ -203,29 +292,31 @@ const HomeScreen = () => {
       <View style={{ flex: 1 }}>
         {/* Header */}
         <View style={{ paddingHorizontal: 24, flexDirection: 'row', justifyContent: 'space-between' }}>
-          <Text style={{ fontFamily: 'Roboto_Bold', fontSize: 22, color: COLORS.white }}>My Books</Text>
+          <Text style={{ fontFamily: 'Roboto_Bold', fontSize: 22, color: COLORS.white }}>Cart</Text>
         </View>
         {/* Books */}
         <View style={{ flex: 1, marginTop: 18 }}>
           <FlatList
-            data={blogs}
+            data={cart}
             horizontal
             showsHorizontalScrollIndicator={false}
             renderItem={({ item, index }) => {
-              if (email == item.postEmail) {
                 return (
                   <TouchableOpacity
                   testID='editButton'
                     style={{ flex: 1, marginLeft: index == 0 ? 24 : 0, marginRight: 22 }}
-                    onPress={() => navigation.navigate('Edit', item)}
+                    onPress={() => {
+                      setDeleteModal(true)
+                      setSetItem(item.id)
+                    }}
                   >
                     <Image
                       source={{ uri: item.uri }}
                       resizeMode="cover"
                       style={{ width: 180, height: 250, borderRadius: 20 }} />
+                    {deleteModal && renderDeleteModal()}
                   </TouchableOpacity>
                 )
-              }
             }}
           />
         </View>
@@ -315,7 +406,7 @@ const HomeScreen = () => {
                   <View style={{ flexDirection: 'row', marginTop: 8 }}>
                     <View style={{ justifyContent: 'center', alignItems: 'center', padding: SIZES.base, marginRight: 5, backgroundColor: COLORS.darkGreen, height: 40, borderRadius: SIZES.radius }}>
                       <Text style={{ fontFamily: 'Roboto_Regular', fontSize: 12, color: COLORS.lightGreen }}>
-                        {item.price}
+                      €{item.price}
                       </Text>
                     </View>
                     <View style={{ justifyContent: 'center', alignItems: 'center', padding: SIZES.base, marginRight: 5, backgroundColor: COLORS.darkRed, height: 40, borderRadius: SIZES.radius }}>

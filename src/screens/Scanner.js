@@ -43,7 +43,7 @@ export default function Scanner() {
         })();
     }, []);
     const [title, setTitle] = useState('')
-    const [price, setPrice] = useState('')
+    const [price, setPrice] = useState()
     const [author, setAuthor] = useState('')
     const [publisher, setPublisher] = useState("")
     const [language, setLanguage] = useState("")
@@ -67,7 +67,7 @@ export default function Scanner() {
         setUri(lines[8])
         setBlogs({
             title: title,
-            price: price,
+            price: parseFloat(price, 10),
             author: author,
             publisher: publisher,
             language: language,

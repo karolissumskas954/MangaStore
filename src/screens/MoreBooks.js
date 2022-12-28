@@ -94,7 +94,7 @@ export default function MoreBooks() {
                 <View style={{ flexDirection: 'row', marginTop: 8 }}>
                   <View style={{ justifyContent: 'center', alignItems: 'center', padding: SIZES.base, marginRight: 5, backgroundColor: COLORS.darkGreen, height: 40, borderRadius: SIZES.radius }}>
                     <Text style={{ fontFamily: 'Roboto_Regular', fontSize: 12, color: COLORS.lightGreen }}>
-                      {item.price}
+                    €{item.price}
                     </Text>
                   </View>
                   <View style={{ justifyContent: 'center', alignItems: 'center', padding: SIZES.base, marginRight: 5, backgroundColor: COLORS.darkRed, height: 40, borderRadius: SIZES.radius }}>

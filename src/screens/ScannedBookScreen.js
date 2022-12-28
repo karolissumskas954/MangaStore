@@ -22,31 +22,33 @@ const ScannedBookScreen = ({ route, navigation }) => {
     isbn,
     publisher } = route.params
     const email = auth.currentUser?.email;
-    const writeData = () => {
-        const id = uuid.v4()
-        db
-        .ref('manga/' + id)
-        .set({
-          title: title,
-          price: price,
-          author: author,
-          publisher: publisher,
-          language: language,
-          pages: pages,
-          isbn: isbn,
-          description: description,
-          postEmail: email,
-          uri: uri
-        })
-        .then(() => {
-          console.log("Document written with ID: ", id);
-          alert("Book Added")
-          navigation.replace("Home")
-        })
-        .catch((error) => {
-          console.error("Error adding document: ", error);
-        });
-      }
+
+
+     const writeData = () => {
+    let lines = email.split('@');
+    const id = uuid.v4()
+    db
+    .ref('cart/' + lines[0] + '/' + id)
+    .set({
+      title: title,
+      price: price,
+      author: author,
+      publisher: publisher,
+      language: language,
+      pages: pages,
+      isbn: isbn,
+      description: description,
+      uri: uri
+    })
+    .then(() => {
+      console.log("Document written with ID: ", id);
+      alert("Book Added to Cart")
+      navigation.replace("Home")
+    })
+    .catch((error) => {
+      console.error("Error adding document: ", error);
+    });
+  }
 
   const LineDivider = () => {
     return (
@@ -101,7 +103,7 @@ const ScannedBookScreen = ({ route, navigation }) => {
           {/* Price  */}
           <View style={{ flex: 1, alignItems: 'center' }}>
             <Text style={{ fontFamily: 'Roboto_Bold', fontSize: 16, color: COLORS.white }}>Price</Text>
-            <Text style={{ fontFamily: 'Roboto_Regular', fontSize: 14, color: COLORS.white }}>{price}</Text>
+            <Text style={{ fontFamily: 'Roboto_Regular', fontSize: 14, color: COLORS.white }}>€{price}</Text>
           </View>
           <LineDivider />
           {/* Pages  */}
@@ -196,7 +198,7 @@ const ScannedBookScreen = ({ route, navigation }) => {
         style={{flex:1, backgroundColor: COLORS.primary, marginHorizontal: 8, marginVertical: 8, borderRadius: 12, alignItems: 'center', justifyContent: 'center' }}
         onPress={()=> writeData()}
         >
-          <Text style={{fontFamily: 'Roboto_Bold', fontSize: 20, color: COLORS.white }}>Buy Book</Text>
+          <Text style={{fontFamily: 'Roboto_Bold', fontSize: 20, color: COLORS.white }}>Add to Cart</Text>
         </TouchableOpacity>
       </View>
     )

@@ -31,9 +31,10 @@ export default function AddBookScreen() {
   const [uri, setUri] = useState("https://www.fujidream.lt/wp-content/uploads/2021/08/81Zx77MdCL-600x900.jpg")
 
   const writeData = () => {
+    let lines = email.split('@');
     const id = uuid.v4()
     db
-    .ref('manga/' + id)
+    .ref('cart/' + lines[0] + '/' + id)
     .set({
       title: title,
       price: price,
@@ -43,12 +44,11 @@ export default function AddBookScreen() {
       pages: pages,
       isbn: isbn,
       description: description,
-      postEmail: email,
       uri: uri
     })
     .then(() => {
       console.log("Document written with ID: ", id);
-      alert("Book Added")
+      alert("Book Added to Cart")
       setTitle("")
       setPrice("")
       setAuthor("")
