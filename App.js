@@ -12,6 +12,7 @@ import MoreBooks from './src/screens/MoreBooks';
 import EditBook from './src/screens/EditBookScreen';
 import Scanner from './src/screens/Scanner'
 import ScannedBookScreen from './src/screens/ScannedBookScreen';
+import AtCounterPaymentScreen from './src/screens/AtCounterPaymentScreen';
 
 
 const Stack = createStackNavigator();
@@ -41,6 +42,7 @@ export default function App() {
         <Stack.Screen name="Edit" component={EditBook} />
         <Stack.Screen name="Scan" component={Scanner} />
         <Stack.Screen name="ScannedBook" component={ScannedBookScreen} />
+        <Stack.Screen name="AtCounter" component={AtCounterPaymentScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

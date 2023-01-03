@@ -15,7 +15,7 @@ import React, { useState, useEffect } from 'react';
 import { auth } from '../../firebase';
 import { useNavigation } from '@react-navigation/core';
 import { db } from '../../firebase';
-import { COLORS, FONTS, SIZES, icons} from '../../constants';
+import { COLORS, FONTS, SIZES, icons } from '../../constants';
 import { LogBox } from 'react-native';
 LogBox.ignoreLogs(["AsyncStorage has been extracted from react-native core and will be removed in a future release. It can now be installed and imported from '@react-native-async-storage/async-storage' instead of 'react-native'. See https://github.com/react-native-async-storage/async-storage"]); // Ignore log notification by message
 LogBox.ignoreLogs(["VirtualizedLists should never be nested inside plain ScrollViews with the same orientation because it can break windowing and other functionality - use another VirtualizedList-backed container instead."]); // Ignore log notification by message
@@ -23,13 +23,13 @@ LogBox.ignoreLogs(['fontFamily "Roboto-Regular" is not a system font and has not
 LogBox.ignoreLogs(['fontFamily "Roboto-Bold" is not a system font and has not been loaded through Font.loadAsync.'])
 import { useFonts } from 'expo-font';
 import Modal from 'react-native-modal';
-import { copyStackTrace } from '@testing-library/react-native/build/helpers/errors';
-import { allowFontScaling } from 'deprecated-react-native-prop-types/DeprecatedTextPropTypes';
 
 const HomeScreen = () => {
 
   const [deleteModal, setDeleteModal] = useState(false)
+  const [purchaseModal, setPurchaseModal] = useState(false);
   const [selItem, setSetItem] = useState('')
+  const [totPri, setTotPri] = useState(0)
 
 
   const [loaded] = useFonts({
@@ -82,6 +82,7 @@ const HomeScreen = () => {
   const [cart, setCart] = useState([])
 
   const fetchCart = async () => {
+    var totalPrice = 0;
     let lines = email.split('@');
     var query = db.ref("cart/" + lines[0]).orderByKey();
     query.once("value")
@@ -90,6 +91,7 @@ const HomeScreen = () => {
         snapshot.forEach(function (childSnapshot) {
           var key = childSnapshot.key;
           const { title, uri, author, description, language, pages, price, publisher, isbn } = childSnapshot.val()
+          totalPrice = totalPrice + price
           items.push({
             id: key,
             title,
@@ -104,6 +106,7 @@ const HomeScreen = () => {
           })
         });
         setCart(items)
+        setTotPri(totalPrice);
       })
   }
   useEffect(() => {
@@ -114,13 +117,13 @@ const HomeScreen = () => {
 
   const deleteItemFromCart = () => {
     let lines = email.split('@');
-    db.ref("cart/"+ lines[0] + "/" + selItem).remove()
-    .then(() => {
-      alert("Item Removed")
-      setSetItem("")
-      navigation.replace("Home")
-    })
-    .catch(() => alert("No"))
+    db.ref("cart/" + lines[0] + "/" + selItem).remove()
+      .then(() => {
+        alert("Item Removed")
+        setSetItem("")
+        navigation.replace("Home")
+      })
+      .catch(() => alert("No"))
   }
 
   const navigation = useNavigation()
@@ -136,45 +139,109 @@ const HomeScreen = () => {
       .catch((error) => alert(error.message));
   }
 
+  function renderPurchaseModal() {
+    return (
+      <Modal
+        animationType='slide'
+        visible={purchaseModal}
+        style={{ justifyContent: 'flex-end', margin: 0 }}>
+        <View
+          style={{
+            backgroundColor: COLORS.white,
+            height: '70%',
+            borderTopStartRadius: 20,
+            borderTopEndRadius: 20
+          }}>
+          <View style={{ flex: 0.2, marginTop: 15, }}>
+            <TouchableOpacity
+              style={{ marginLeft: 18 }}
+              onPress={() => {
+                setPurchaseModal(false)
+              }}>
+              <Image
+                source={icons.back_icon}
+                resizeMode="contain"
+                style={{ width: 25, height: 25, tintColor: COLORS.black }}
+              />
+            </TouchableOpacity>
+          </View>
+          <View style={{flex: 0.2}}>
+          <Text style={{ fontFamily: 'Roboto_Bold', fontSize: 25, color: COLORS.black, alignSelf: 'center', marginTop: -33 }}>Select payment method</Text>
+          </View>
+
+          <View style={{ flex: 0.1, justifyContent: 'center', alignItems: 'center' }}>
+            <TouchableOpacity style={{ backgroundColor: COLORS.primary, width: '80%', padding: 10, borderRadius: 10, alignItems: 'center' }}
+              onPress={() => { 
+                navigation.replace("AtCounter")
+                setPurchaseModal(false)
+            }}
+            >
+              <Text style={{ fontFamily: 'Roboto_Bold', fontSize: 18, color: COLORS.white }}>At Counter</Text>
+            </TouchableOpacity>
+          </View>
+          <View style={{ flex: 0.1, justifyContent: 'center', alignItems: 'center' }}>
+            <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
+              <View style={{ width: '28%', alignItems: 'center' }}>
+                <Text style={{ fontFamily: 'Roboto_Regular', fontSize: 18, color: COLORS.black}}>---------------------</Text>
+              </View>
+              <View style={{ width: '10%', alignItems: 'center' }}>
+                <Text style={{ fontFamily: 'Roboto_Regular', fontSize: 18, color: COLORS.black }}>OR</Text>
+              </View>
+              <View style={{ width: '28%', alignItems: 'center' }}>
+                <Text style={{ fontFamily: 'Roboto_Regular', fontSize: 18, color: COLORS.black}}>---------------------</Text>
+              </View>
+            </View>
+          </View>
+          <View style={{ flex: 0.1, justifyContent: 'center', alignItems: 'center' }}>
+            <TouchableOpacity style={{ backgroundColor: COLORS.primary, width: '80%', padding: 10, borderRadius: 10, alignItems: 'center' }}
+              onPress={() => { setPurchaseModal(false) }}
+            >
+              <Text style={{ fontFamily: 'Roboto_Bold', fontSize: 18, color: COLORS.white }}>Pay With Card</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+    )
+  }
 
   function renderDeleteModal() {
     return (
-        <Modal
-            animationType='slide'
-            visible={deleteModal}
-            style={{ justifyContent: 'flex-end', margin: 0 }}>
-            <View
-                style={{
-                    backgroundColor: '#e2dfe7',
-                    height: '20%',
-                    borderTopStartRadius: 20,
-                    borderTopEndRadius: 20
-                }}>
-                <View style={{ flex: 0.3, justifyContent: 'center', alignItems: 'center' }}>
-                   <Text style={{fontFamily: 'Roboto_Regular', fontSize: 18,color: COLORS.black}}>Remove this item from cart?</Text>
-                </View>
-                <View style={{ flex: 0.4, justifyContent: 'center', alignItems: 'center' }}>
-                  <View style={{flexDirection: "row",flexWrap: "wrap"}}>
-                    <View style={{width: '50%', alignItems: 'center'}}>
-                      <TouchableOpacity style={{backgroundColor: COLORS.primary,width: '80%',padding: 10,borderRadius: 10, alignItems: 'center'}}
-                      onPress={() => {deleteItemFromCart()}}
-                      >
-                      <Text style={{fontFamily: 'Roboto_Bold', fontSize: 18,color: COLORS.white }}>Remove</Text>
-                      </TouchableOpacity>
-                    </View>
-                    <View style={{width: '50%', alignItems: 'center'}}>
-                      <TouchableOpacity style={{backgroundColor: COLORS.primary,width: '80%',padding: 10,borderRadius: 10, alignItems: 'center'}}
-                      onPress={() => {setDeleteModal(false)}}
-                      >
-                      <Text style={{fontFamily: 'Roboto_Bold', fontSize: 18,color: COLORS.white }}>Exit</Text>
-                      </TouchableOpacity>
-                    </View>
-                  </View>
-                </View>
+      <Modal
+        animationType='slide'
+        visible={deleteModal}
+        style={{ justifyContent: 'flex-end', margin: 0 }}>
+        <View
+          style={{
+            backgroundColor: COLORS.white,
+            height: '20%',
+            borderTopStartRadius: 20,
+            borderTopEndRadius: 20
+          }}>
+          <View style={{ flex: 0.4, justifyContent: 'center', alignItems: 'center' }}>
+            <Text style={{ fontFamily: 'Roboto_Regular', fontSize: 18, color: COLORS.black }}>Remove this item from cart?</Text>
+          </View>
+          <View style={{ flex: 0.4, justifyContent: 'center', alignItems: 'center' }}>
+            <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
+              <View style={{ width: '50%', alignItems: 'center' }}>
+                <TouchableOpacity style={{ backgroundColor: COLORS.primary, width: '80%', padding: 10, borderRadius: 10, alignItems: 'center' }}
+                  onPress={() => { deleteItemFromCart() }}
+                >
+                  <Text style={{ fontFamily: 'Roboto_Bold', fontSize: 18, color: COLORS.white }}>Remove</Text>
+                </TouchableOpacity>
+              </View>
+              <View style={{ width: '50%', alignItems: 'center' }}>
+                <TouchableOpacity style={{ backgroundColor: COLORS.primary, width: '80%', padding: 10, borderRadius: 10, alignItems: 'center' }}
+                  onPress={() => { setDeleteModal(false) }}
+                >
+                  <Text style={{ fontFamily: 'Roboto_Bold', fontSize: 18, color: COLORS.white }}>Exit</Text>
+                </TouchableOpacity>
+              </View>
             </View>
-        </Modal>
+          </View>
+        </View>
+      </Modal>
     )
-}
+  }
   function renderHeader(profile) {
     return (
       <View style={{
@@ -185,8 +252,8 @@ const HomeScreen = () => {
       }}>
         {/* Greetings */}
         <View style={{ flex: 1 }}>
-          <View style={{ marginRight: SIZES.padding }}> 
-            <Text style={{ fontFamily: 'Roboto_Bold', fontSize: 22,color: COLORS.white }}>Good Morning</Text>
+          <View style={{ marginRight: SIZES.padding }}>
+            <Text style={{ fontFamily: 'Roboto_Bold', fontSize: 22, color: COLORS.white }}>Good Morning</Text>
             <Text style={{ fontFamily: 'Roboto_Bold', fontSize: 22, color: COLORS.tone }}>{profile}</Text>
           </View>
         </View>
@@ -208,7 +275,7 @@ const HomeScreen = () => {
               <Image
                 source={icons.logout_icon}
                 resizeMode="contain"
-                style={{ width: 20, height: 20, marginLeft: 5, tintColor: COLORS.white}}
+                style={{ width: 20, height: 20, marginLeft: 5, tintColor: COLORS.white }}
               />
             </View>
             <Text style={{ marginLeft: SIZES.base, color: COLORS.white, fontFamily: 'Roboto_Regular', fontSize: 16, }}>Log Out</Text>
@@ -235,33 +302,34 @@ const HomeScreen = () => {
         <View style={{ flexDirection: 'row', height: 70, backgroundColor: COLORS.primary, borderRadius: SIZES.radius }}>
           {/* Add book */}
           <TouchableOpacity
-          testID='addButton'
+            testID='addButton'
             style={{ flex: 1 }}
-            onPress={() => navigation.navigate("Add")}>
+            onPress={() => setPurchaseModal(true)}>
             <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
               <Image
                 source={icons.add_icon}
                 resizeMode="contain"
                 style={{ width: 25, height: 25, tintColor: COLORS.white }}
               />
-              <View style={{flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-              <Text style={{fontFamily: 'Roboto_Regular', fontSize: 14, color: COLORS.white }}>  Check Out</Text>
-              {/* <Text style={{fontFamily: 'Roboto_Regular', fontSize: 14, color: COLORS.white }}>  €{cost}</Text> */}
+              <View style={{ flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+                <Text style={{ fontFamily: 'Roboto_Regular', fontSize: 14, color: COLORS.white }}>  Check Out</Text>
+                <Text style={{ fontFamily: 'Roboto_Regular', fontSize: 14, color: COLORS.white }}>  €{totPri}</Text>
               </View>
+              {purchaseModal && renderPurchaseModal()}
             </View>
           </TouchableOpacity>
           {/* Line Divider */}
           <LineDivider />
           {/* all books */}
           <TouchableOpacity
-          testID='allBooksButton'
+            testID='allBooksButton'
             style={{ flex: 1 }}
             onPress={() => navigation.replace("More")}>
             <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
               <Image
                 source={icons.book_icon}
                 resizeMode="contain"
-                style={{ width: 25, height: 25 ,tintColor: COLORS.white}}
+                style={{ width: 25, height: 25, tintColor: COLORS.white }}
               />
               <Text style={{ fontFamily: 'Roboto_Regular', fontSize: 14, color: COLORS.white }}>  All Books</Text>
             </View>
@@ -270,9 +338,9 @@ const HomeScreen = () => {
           <LineDivider />
           {/* Scanner */}
           <TouchableOpacity
-          testID='scanButton'
+            testID='scanButton'
             style={{ flex: 1 }}
-            onPress={() =>  navigation.navigate("Scan")}>
+            onPress={() => navigation.navigate("Scan")}>
             <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
               <Image
                 source={icons.scan_icon}
@@ -292,7 +360,7 @@ const HomeScreen = () => {
       <View style={{ flex: 1 }}>
         {/* Header */}
         <View style={{ paddingHorizontal: 24, flexDirection: 'row', justifyContent: 'space-between' }}>
-          <Text style={{ fontFamily: 'Roboto_Bold', fontSize: 22, color: COLORS.white }}>Cart</Text>
+          <Text style={{ fontFamily: 'Roboto_Bold', fontSize: 22, color: COLORS.white }}>Cart   {totPri}€</Text>
         </View>
         {/* Books */}
         <View style={{ flex: 1, marginTop: 18 }}>
@@ -301,22 +369,22 @@ const HomeScreen = () => {
             horizontal
             showsHorizontalScrollIndicator={false}
             renderItem={({ item, index }) => {
-                return (
-                  <TouchableOpacity
+              return (
+                <TouchableOpacity
                   testID='editButton'
-                    style={{ flex: 1, marginLeft: index == 0 ? 24 : 0, marginRight: 22 }}
-                    onPress={() => {
-                      setDeleteModal(true)
-                      setSetItem(item.id)
-                    }}
-                  >
-                    <Image
-                      source={{ uri: item.uri }}
-                      resizeMode="cover"
-                      style={{ width: 180, height: 250, borderRadius: 20 }} />
-                    {deleteModal && renderDeleteModal()}
-                  </TouchableOpacity>
-                )
+                  style={{ flex: 1, marginLeft: index == 0 ? 24 : 0, marginRight: 22 }}
+                  onPress={() => {
+                    setDeleteModal(true)
+                    setSetItem(item.id)
+                  }}
+                >
+                  <Image
+                    source={{ uri: item.uri }}
+                    resizeMode="cover"
+                    style={{ width: 180, height: 250, borderRadius: 20 }} />
+                  {deleteModal && renderDeleteModal()}
+                </TouchableOpacity>
+              )
             }}
           />
         </View>
@@ -375,7 +443,7 @@ const HomeScreen = () => {
           renderItem={({ item }) => (
             <View style={{ marginVertical: 8 }}>
               <TouchableOpacity
-              testID='bookButton'
+                testID='bookButton'
                 style={{ flex: 1, flexDirection: 'row' }}
                 onPress={() => navigation.navigate("Book", item)}
               >
@@ -385,14 +453,14 @@ const HomeScreen = () => {
                   resizeMode='cover'
                   style={{ width: 100, height: 150, borderRadius: 10 }}
                 />
-                <View style={{ flex: 1, marginLeft: 12, marginTop: -5}}>
+                <View style={{ flex: 1, marginLeft: 12, marginTop: -5 }}>
                   {/* Book name and author  */}
                   <View>
                     <Text style={{ paddingRight: SIZES.padding, fontFamily: 'Roboto_Bold', fontSize: 22, color: COLORS.white }}>{item.title}</Text>
                     <Text style={{ fontFamily: 'Roboto_Bold', fontSize: 16, color: COLORS.lightGray }}>{item.author}</Text>
                   </View>
                   {/* Book Info  */}
-                  <View style={{ flexDirection: 'row', marginTop: 7}}>
+                  <View style={{ flexDirection: 'row', marginTop: 7 }}>
                     <Image
                       source={icons.page_icon}
                       resizeMode="contain"
@@ -406,7 +474,7 @@ const HomeScreen = () => {
                   <View style={{ flexDirection: 'row', marginTop: 8 }}>
                     <View style={{ justifyContent: 'center', alignItems: 'center', padding: SIZES.base, marginRight: 5, backgroundColor: COLORS.darkGreen, height: 40, borderRadius: SIZES.radius }}>
                       <Text style={{ fontFamily: 'Roboto_Regular', fontSize: 12, color: COLORS.lightGreen }}>
-                      €{item.price}
+                        €{item.price}
                       </Text>
                     </View>
                     <View style={{ justifyContent: 'center', alignItems: 'center', padding: SIZES.base, marginRight: 5, backgroundColor: COLORS.darkRed, height: 40, borderRadius: SIZES.radius }}>
@@ -450,7 +518,7 @@ const HomeScreen = () => {
           </View>
           <View style={{ padding: 8, marginLeft: 12 }}>
             <TouchableOpacity
-            testID='moreButton'
+              testID='moreButton'
               onPress={() => navigation.replace("More")}
             >
               <Text style={{ ...FONTS.body3, color: COLORS.lightGray, alignSelf: 'flex-start', textDecorationLine: 'underline' }}> More Books</Text>

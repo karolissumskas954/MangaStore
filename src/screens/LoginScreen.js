@@ -5,6 +5,8 @@ import { useNavigation } from '@react-navigation/core'
 import { LogBox } from 'react-native';
 import { COLORS, FONTS, SIZES, icons } from '../../constants';
 LogBox.ignoreLogs(["AsyncStorage has been extracted from react-native core and will be removed in a future release. It can now be installed and imported from '@react-native-async-storage/async-storage' instead of 'react-native'. See https://github.com/react-native-async-storage/async-storage"]); // Ignore log notification by message
+LogBox.ignoreLogs(['fontFamily "Roboto-Regular" is not a system font and has not been loaded through Font.loadAsync.']);
+LogBox.ignoreLogs(['fontFamily "Roboto-Bold" is not a system font and has not been loaded through Font.loadAsync.'])
 import { useFonts } from 'expo-font';
 import Modal from 'react-native-modal';
 import uuid from 'react-native-uuid';
@@ -14,7 +16,6 @@ const LoginScreen = () => {
         Roboto_Regular: require('../../assets/fonts/Roboto-Regular.ttf'),
         Roboto_Bold: require('../../assets/fonts/Roboto-Bold.ttf'),
     });
-
     const [loginModal, setLoginModal] = useState(false)
     const [registerModal, setRegisterModal] = useState(false)
     const [email, setEmail] = useState('');
@@ -34,21 +35,21 @@ const LoginScreen = () => {
     const addUserDetails = () => {
         const id = uuid.v4();
         db
-        .ref('users/' + id)
-        .set({
-          email:email,
-          fullName:name,
-          phone:phone
-        })
-        .then(() => {
-          setEmail('')
-          setName('')
-          setPassword('')
-          setPhone('')
-        })
-        .catch((error) => {
-          console.error("Error adding document: ", error);
-        });
+            .ref('users/' + id)
+            .set({
+                email: email,
+                fullName: name,
+                phone: phone
+            })
+            .then(() => {
+                setEmail('')
+                setName('')
+                setPassword('')
+                setPhone('')
+            })
+            .catch((error) => {
+                console.error("Error adding document: ", error);
+            });
     }
 
     const handleSignUp = () => {
@@ -78,7 +79,7 @@ const LoginScreen = () => {
                 style={{ justifyContent: 'flex-end', margin: 0 }}>
                 <View
                     style={{
-                        backgroundColor: '#e2dfe7',
+                        backgroundColor: COLORS.white,
                         height: '55%',
                         borderTopStartRadius: 20,
                         borderTopEndRadius: 20
@@ -131,12 +132,12 @@ const LoginScreen = () => {
                         </View>
                         <View>
                             <TouchableOpacity
-                            onPress={() => {
-                                setLoginModal(false)
-                                setEmail('')
-                                setPassword('')
-                                setRegisterModal(true)
-                            }}
+                                onPress={() => {
+                                    setLoginModal(false)
+                                    setEmail('')
+                                    setPassword('')
+                                    setRegisterModal(true)
+                                }}
                             >
                                 <Text style={{ fontFamily: 'Roboto_Regular', fontSize: 15, color: COLORS.primary }}>Sign Up</Text>
                             </TouchableOpacity>
@@ -155,7 +156,7 @@ const LoginScreen = () => {
                 style={{ justifyContent: 'flex-end', margin: 0 }}>
                 <View
                     style={{
-                        backgroundColor: '#e2dfe7',
+                        backgroundColor: COLORS.white,
                         height: '65%',
                         borderTopStartRadius: 20,
                         borderTopEndRadius: 20
@@ -224,14 +225,14 @@ const LoginScreen = () => {
                         </View>
                         <View>
                             <TouchableOpacity
-                             onPress={() => {
-                                setLoginModal(true)
-                                setEmail('')
-                                setPassword('')
-                                setName('')
-                                setPhone('')
-                                setRegisterModal(false)
-                            }}
+                                onPress={() => {
+                                    setLoginModal(true)
+                                    setEmail('')
+                                    setPassword('')
+                                    setName('')
+                                    setPhone('')
+                                    setRegisterModal(false)
+                                }}
                             >
                                 <Text style={{ fontFamily: 'Roboto_Regular', fontSize: 15, color: COLORS.primary }}>Sign In</Text>
                             </TouchableOpacity>
@@ -291,7 +292,7 @@ const styles = StyleSheet.create({
         width: '80%'
     },
     input: {
-        backgroundColor: COLORS.white,
+        backgroundColor: COLORS.lightGray2,
         paddingHorizontal: 15,
         paddingVertical: 10,
         borderRadius: 10,
