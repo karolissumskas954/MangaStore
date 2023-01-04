@@ -34,11 +34,14 @@
     "react-native": "0.69.6",
     "react-native-gesture-handler": "^2.8.0",
     "react-native-modal": "^13.0.1",
+    "react-native-qrcode-svg": "^6.1.2",
     "react-native-safe-area-context": "4.3.1",
     "react-native-screens": "~3.15.0",
     "react-native-snap-carousel": "^3.9.1",
     "react-native-uuid": "^2.0.1",
-    "react-swipe-to-close-modal": "^1.4.0"
+    "react-swipe-to-close-modal": "^1.4.0",
+    "react-native-svg": "12.3.0",
+    "@stripe/stripe-react-native": "0.13.1"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",

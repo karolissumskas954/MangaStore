@@ -25,13 +25,9 @@ import { useFonts } from 'expo-font';
 import Modal from 'react-native-modal';
 
 const HomeScreen = () => {
-
   const [deleteModal, setDeleteModal] = useState(false)
-  const [purchaseModal, setPurchaseModal] = useState(false);
   const [selItem, setSetItem] = useState('')
   const [totPri, setTotPri] = useState(0)
-
-
   const [loaded] = useFonts({
     Roboto_Regular: require('../../assets/fonts/Roboto-Regular.ttf'),
     Roboto_Bold: require('../../assets/fonts/Roboto-Bold.ttf'),
@@ -114,7 +110,6 @@ const HomeScreen = () => {
     fetchBlogs();
   }, [])
 
-
   const deleteItemFromCart = () => {
     let lines = email.split('@');
     db.ref("cart/" + lines[0] + "/" + selItem).remove()
@@ -137,71 +132,6 @@ const HomeScreen = () => {
         navigation.replace("Login")
       })
       .catch((error) => alert(error.message));
-  }
-
-  function renderPurchaseModal() {
-    return (
-      <Modal
-        animationType='slide'
-        visible={purchaseModal}
-        style={{ justifyContent: 'flex-end', margin: 0 }}>
-        <View
-          style={{
-            backgroundColor: COLORS.white,
-            height: '70%',
-            borderTopStartRadius: 20,
-            borderTopEndRadius: 20
-          }}>
-          <View style={{ flex: 0.2, marginTop: 15, }}>
-            <TouchableOpacity
-              style={{ marginLeft: 18 }}
-              onPress={() => {
-                setPurchaseModal(false)
-              }}>
-              <Image
-                source={icons.back_icon}
-                resizeMode="contain"
-                style={{ width: 25, height: 25, tintColor: COLORS.black }}
-              />
-            </TouchableOpacity>
-          </View>
-          <View style={{flex: 0.2}}>
-          <Text style={{ fontFamily: 'Roboto_Bold', fontSize: 25, color: COLORS.black, alignSelf: 'center', marginTop: -33 }}>Select payment method</Text>
-          </View>
-
-          <View style={{ flex: 0.1, justifyContent: 'center', alignItems: 'center' }}>
-            <TouchableOpacity style={{ backgroundColor: COLORS.primary, width: '80%', padding: 10, borderRadius: 10, alignItems: 'center' }}
-              onPress={() => { 
-                navigation.replace("AtCounter")
-                setPurchaseModal(false)
-            }}
-            >
-              <Text style={{ fontFamily: 'Roboto_Bold', fontSize: 18, color: COLORS.white }}>At Counter</Text>
-            </TouchableOpacity>
-          </View>
-          <View style={{ flex: 0.1, justifyContent: 'center', alignItems: 'center' }}>
-            <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
-              <View style={{ width: '28%', alignItems: 'center' }}>
-                <Text style={{ fontFamily: 'Roboto_Regular', fontSize: 18, color: COLORS.black}}>---------------------</Text>
-              </View>
-              <View style={{ width: '10%', alignItems: 'center' }}>
-                <Text style={{ fontFamily: 'Roboto_Regular', fontSize: 18, color: COLORS.black }}>OR</Text>
-              </View>
-              <View style={{ width: '28%', alignItems: 'center' }}>
-                <Text style={{ fontFamily: 'Roboto_Regular', fontSize: 18, color: COLORS.black}}>---------------------</Text>
-              </View>
-            </View>
-          </View>
-          <View style={{ flex: 0.1, justifyContent: 'center', alignItems: 'center' }}>
-            <TouchableOpacity style={{ backgroundColor: COLORS.primary, width: '80%', padding: 10, borderRadius: 10, alignItems: 'center' }}
-              onPress={() => { setPurchaseModal(false) }}
-            >
-              <Text style={{ fontFamily: 'Roboto_Bold', fontSize: 18, color: COLORS.white }}>Pay With Card</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
-    )
   }
 
   function renderDeleteModal() {
@@ -304,7 +234,7 @@ const HomeScreen = () => {
           <TouchableOpacity
             testID='addButton'
             style={{ flex: 1 }}
-            onPress={() => setPurchaseModal(true)}>
+            onPress={() => navigation.replace("AtCounter")}>
             <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
               <Image
                 source={icons.add_icon}
@@ -315,7 +245,6 @@ const HomeScreen = () => {
                 <Text style={{ fontFamily: 'Roboto_Regular', fontSize: 14, color: COLORS.white }}>  Check Out</Text>
                 <Text style={{ fontFamily: 'Roboto_Regular', fontSize: 14, color: COLORS.white }}>  €{totPri}</Text>
               </View>
-              {purchaseModal && renderPurchaseModal()}
             </View>
           </TouchableOpacity>
           {/* Line Divider */}
@@ -360,7 +289,8 @@ const HomeScreen = () => {
       <View style={{ flex: 1 }}>
         {/* Header */}
         <View style={{ paddingHorizontal: 24, flexDirection: 'row', justifyContent: 'space-between' }}>
-          <Text style={{ fontFamily: 'Roboto_Bold', fontSize: 22, color: COLORS.white }}>Cart   {totPri}€</Text>
+          <Text style={{ fontFamily: 'Roboto_Bold', fontSize: 22, color: COLORS.white }}>Cart</Text>
+          <Text style={{ fontFamily: 'Roboto_Bold', fontSize: 22, color: COLORS.primary }}>Total: {totPri}€</Text>
         </View>
         {/* Books */}
         <View style={{ flex: 1, marginTop: 18 }}>

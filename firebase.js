@@ -134,6 +134,8 @@ function isUserRegistered(){
 }
 
 
+
+
 export {
     auth,
     db,
@@ -145,5 +147,5 @@ export {
     deleteDataFromDatabase,
     isDataDelted,
     register,
-    isUserRegistered
+    isUserRegistered,
 };
